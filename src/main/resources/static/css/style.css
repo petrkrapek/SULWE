@@ -1,0 +1,36 @@
+.card {
+    max-width: 50%;
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+.card:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.card .title {
+    font-size: 24px;
+    color: #333;
+}
+.card .content {
+    font-size: 18px;
+    color: #666;
+}
+.m2 {
+    max-width: 50%;
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+.m1 {
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+    font-size: 16px;
+}
+.btn.btn-primary {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+}
