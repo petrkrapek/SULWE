@@ -3,7 +3,6 @@ import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -15,8 +14,6 @@ public class TopLekyService {
      * @return list nejpředepisovanějších léků
      */
     public List<String> topLeky(TopLekyDTO topLekyDTO) {
-        //List<String> topLekySeznam = new ArrayList<>(Arrays.asList("Lek1", "Lek2", "Lek3", "Lek4", "Lek5"));
-
         List<String> topLekySeznam = new ArrayList<>();
         PreparedStatement dotaz = null;
         try (Connection spojeni = DriverManager.getConnection("jdbc:mysql://localhost:3306/erecept?user=root&password=")) {
