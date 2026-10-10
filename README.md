@@ -43,6 +43,10 @@ faktů novinářem. Bez klíče TypeSafe je funkce vypnutá a tlačítko se nezo
   Tlačítko **Shrnout znovu** vytvoří nové.
 - API klíče jsou uložené jen lokálně v prohlížeči (`chrome.storage.local`) a posílají se pouze
   na `api.anthropic.com`, resp. `api.typesafe.ai`.
+- Adresa stránky se do API posílá bez parametrů a kotvy (`?…`, `#…`), protože v nich
+  mohou být přihlašovací tokeny nebo osobní údaje.
+- Stránky rozšíření mají přísnou Content Security Policy: smějí spouštět jen vlastní skripty
+  a připojovat se jen k těmto dvěma API.
 
 Rozšíření nefunguje na interních stránkách Chromu (`chrome://…`), v Chrome Web Store
 a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí číst obsah.
@@ -80,6 +84,7 @@ src/
   summarize.js      ← volání Claude API a prompt
   factcheck.js      ← ověření fake news přes TypeSafe AI (Jev)
   markdown.js       ← bezpečné vykreslení Markdownu
+  page.js           ← očištění dat stránky před odesláním (adresa bez parametrů)
   settings.js       ← nastavení a jejich výchozí hodnoty
   options.js        ← stránka nastavení
 ```

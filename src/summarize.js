@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { safeUrl, neutralizeTags } from "./page.js";
 
 const LANGUAGE_INSTRUCTIONS = {
   cs: "Napiš shrnutí česky.",
@@ -41,10 +42,10 @@ export async function summarizePage({ page, settings, onText, signal }) {
 ${LENGTH_INSTRUCTIONS[settings.length] ?? LENGTH_INSTRUCTIONS.medium}
 
 <page>
-<title>${page.title}</title>
-<url>${page.url}</url>
+<title>${neutralizeTags(page.title)}</title>
+<url>${safeUrl(page.url)}</url>
 <content>
-${page.text}
+${neutralizeTags(page.text)}
 </content>
 </page>`;
 
