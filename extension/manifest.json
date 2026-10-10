@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Shrnutí stránky",
-  "version": "0.3.1",
+  "version": "0.3.0",
   "description": "Pomocí AI shrne aktuální webovou stránku a volitelně posoudí, zda nejde o fake news.",
   "action": {
     "default_title": "Shrnout stránku",
