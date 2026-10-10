@@ -1,8 +1,9 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { loadSettings, MODELS } from "./settings.js";
+import { loadSettings, saveSettings, MODELS } from "./settings.js";
 import { summarizePage, describeError } from "./summarize.js";
 import { renderMarkdown } from "./markdown.js";
 import { factCheckPage, FactCheckError, VERDICTS } from "./factcheck.js";
+import { pinPage, parseTarget, AirtableError } from "./airtable.js";
 
 // Horní mez délky textu stránky (znaky). Běžné stránky jsou mnohem kratší.
 const MAX_CHARS = 400_000;
@@ -22,12 +23,20 @@ const els = {
   openOptions: $("open-options"),
   verify: $("verify"),
   verdict: $("verdict"),
+  pin: $("pin"),
 };
 
 let currentText = "";
 let controller = null;
 let verifyController = null;
 let pagePromise = null;
+let pinned = false;
+
+// Kopírovat a Pin jsou dostupné, jen když je shrnutí hotové.
+function setSummaryReady(ready) {
+  els.copy.disabled = !ready;
+  els.pin.disabled = !ready || pinned;
+}
 
 function setStatus(text) {
   els.status.textContent = text;
@@ -99,6 +108,7 @@ function getPage(tab) {
 
 const cacheKey = (tab) => `summary:${tab.url}`;
 const verdictKey = (tab) => `verdict:${tab.url}`;
+const pinKey = (tab) => `pin:${tab.url}`;
 
 async function summarize({ force = false } = {}) {
   controller?.abort();
@@ -109,7 +119,7 @@ async function summarize({ force = false } = {}) {
   showNotice("");
   els.summary.replaceChildren();
   els.meta.textContent = "";
-  els.copy.disabled = true;
+  setSummaryReady(false);
   els.regenerate.disabled = true;
   currentText = "";
 
@@ -133,7 +143,7 @@ async function summarize({ force = false } = {}) {
         currentText = cached.text;
         renderMarkdown(els.summary, currentText);
         els.meta.textContent = `${modelLabel(cached.model)} · uloženo`;
-        els.copy.disabled = false;
+        setSummaryReady(true);
         els.regenerate.disabled = false;
         setStatus("");
         return;
@@ -171,7 +181,7 @@ async function summarize({ force = false } = {}) {
     }
 
     els.meta.textContent = modelLabel(message.model);
-    els.copy.disabled = !currentText;
+    setSummaryReady(Boolean(currentText));
     await chrome.storage.session.set({
       [cacheKey(tab)]: { text: currentText, model: message.model },
     });
@@ -233,6 +243,43 @@ async function verify({ force = false } = {}) {
   }
 }
 
+function showPinned(status) {
+  pinned = true;
+  els.pin.disabled = true;
+  els.pin.textContent = status === "exists" ? "Už připnuto" : "Připnuto ✓";
+  els.pin.title = status === "exists" ? "Tato stránka už v Airtable je." : "Uloženo do Airtable.";
+}
+
+async function pin() {
+  const settings = await loadSettings();
+  if (!settings.airtableToken || !currentText) return;
+
+  els.pin.disabled = true;
+  els.pin.textContent = "Ukládám…";
+  showError("");
+  try {
+    const tab = await getActiveTab();
+    const result = await pinPage({
+      token: settings.airtableToken,
+      target: settings.airtableTarget,
+      tableName: settings.airtableTable,
+      url: tab.url,
+      summary: currentText,
+    });
+    // Pokud se databáze právě založila, zapamatujeme si její ID pro další piny.
+    if (!parseTarget(settings.airtableTarget).baseId) {
+      await saveSettings({ airtableTarget: result.baseId });
+    }
+    showPinned(result.status);
+    await chrome.storage.session.set({ [pinKey(tab)]: result.status });
+  } catch (err) {
+    els.pin.textContent = "Pin";
+    els.pin.disabled = false;
+    showError(err instanceof AirtableError ? err.message : `Uložení do Airtable selhalo: ${err.message}`);
+  }
+}
+
+els.pin.addEventListener("click", pin);
 els.verify.addEventListener("click", () => verify({ force: !els.verdict.hidden }));
 els.regenerate.addEventListener("click", () => summarize({ force: true }));
 els.copy.addEventListener("click", async () => {
@@ -247,7 +294,13 @@ els.openOptions.addEventListener("click", openOptions);
 summarize();
 
 // Tlačítko „Ověřit“ je vidět jen s nastaveným klíčem TypeSafe; uložený výsledek se ukáže hned.
-loadSettings().then((settings) => {
+loadSettings().then(async (settings) => {
+  els.pin.hidden = !settings.airtableToken;
+  if (settings.airtableToken) {
+    const tab = await getActiveTab();
+    const status = (await chrome.storage.session.get(pinKey(tab)))[pinKey(tab)];
+    if (status) showPinned(status);
+  }
   els.verify.hidden = !settings.typesafeKey;
   if (settings.typesafeKey) {
     getActiveTab().then(async (tab) => {
