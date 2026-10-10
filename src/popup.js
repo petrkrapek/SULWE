@@ -53,8 +53,13 @@ function showNotice(text) {
   els.notice.hidden = !text;
 }
 
+// Název modelu bez předpony „Claude“, např. „Haiku 5.5“. Neznámé ID (třeba záložní model
+// po odmítnutí) převedeme z „claude-opus-4-8“ na „Opus 4.8“.
 function modelLabel(id) {
-  return MODELS.find((m) => m.id === id)?.label.replace(/\s*\(.*\)$/, "") ?? id;
+  const known = MODELS.find((m) => m.id === id);
+  if (known) return known.label.replace(/\s*\(.*\)$/, "");
+  const m = /^claude-([a-z]+)-(\d+)(?:-(\d+))?/.exec(id ?? "");
+  return m ? `${m[1][0].toUpperCase()}${m[1].slice(1)} ${m[3] ? `${m[2]}.${m[3]}` : m[2]}` : id;
 }
 
 // Funkce běží uvnitř stránky (injektuje ji chrome.scripting) – nesmí používat nic zvenku.

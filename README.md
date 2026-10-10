@@ -91,7 +91,7 @@ a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí čís
 
 | Volba | Možnosti |
 |---|---|
-| Model | Automaticky podle textu, Claude Opus 5.5 (výchozí, nejkvalitnější), Claude Sonnet 5.5, Claude Haiku 5.5 (nejlevnější) |
+| Model | Automaticky podle textu, Opus 5.5 (výchozí, nejkvalitnější), Sonnet 5.5, Haiku 5.5 (nejlevnější) |
 | Jazyk shrnutí | čeština, angličtina, jazyk stránky |
 | Délka | krátké, střední, podrobné |
 
@@ -99,7 +99,7 @@ a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí čís
 
 Do Developer Dashboardu se nahrává **jen ZIP s obsahem složky `extension`**, ne celý repozitář
 (soubor `manifest.json` musí být v kořeni archivu). Hotový balíček je ve složce `release/`,
-např. `release/shrnuti-stranky-0.4.1.zip`. Nový vytvoříte příkazem:
+např. `release/shrnuti-stranky-0.4.2.zip`. Nový vytvoříte příkazem:
 
 ```bash
 npm run zip      # sestaví kód a vytvoří release/shrnuti-stranky-<verze>.zip
