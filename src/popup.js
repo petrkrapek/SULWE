@@ -314,6 +314,7 @@ async function pin() {
             await pinToCraft({
               connectionUrl: settings.craftUrl,
               apiKey: settings.craftKey,
+              mode: settings.craftMode,
               title: tab.title,
               url: tab.url,
               summary: currentText,

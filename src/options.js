@@ -1,5 +1,5 @@
 import { loadSettings, saveSettings, MODELS, LANGUAGES, LENGTHS, AUTO_MODEL, PIN_TARGETS } from "./settings.js";
-import { parseConnectionUrl } from "./craft.js";
+import { parseConnectionUrl, CRAFT_MODES } from "./craft.js";
 import { DEFAULT_TABLE } from "./airtable.js";
 
 const form = document.getElementById("form");
@@ -18,6 +18,7 @@ fillSelect(form.model, MODELS);
 fillSelect(form.language, LANGUAGES);
 fillSelect(form.length, LENGTHS);
 fillSelect(form.pinTarget, PIN_TARGETS);
+fillSelect(form.craftMode, CRAFT_MODES);
 
 const settings = await loadSettings();
 form.apiKey.value = settings.apiKey;
@@ -33,6 +34,7 @@ form.length.value = settings.length;
 form.typesafeKey.value = settings.typesafeKey;
 form.pinTarget.value = settings.pinTarget;
 form.craftUrl.value = settings.craftUrl;
+form.craftMode.value = settings.craftMode;
 form.craftKey.value = settings.craftKey;
 form.airtableToken.value = settings.airtableToken;
 
@@ -70,6 +72,7 @@ form.addEventListener("submit", async (e) => {
   await saveSettings({
     pinTarget: form.pinTarget.value,
     craftUrl,
+    craftMode: form.craftMode.value,
     craftKey: form.craftKey.value.trim(),
     apiKey: form.apiKey.value.trim(),
     model: form.model.value,

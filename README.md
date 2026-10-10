@@ -55,13 +55,20 @@ zvolíte cíl: **Airtable** (záznam do tabulky), nebo **Craft** (nová poznámk
 
 ### Pin do Craft
 
+V nastavení v části **Jak ukládat** zvolíte režim podle typu připojení v Craft:
+
+| Režim | Typ připojení v Craft | Výsledek |
+|---|---|---|
+| **Nový dokument** (výchozí) | ke všem dokumentům | samostatný dokument pojmenovaný podle stránky, mezi nezařazenými (Unsorted) |
+| **Denní poznámka** | Daily Notes & Tasks | podstránka na konci dnešního denního zápisu (Daily Note) |
+
+Obojí obsahuje odkaz na stránku, shrnutí a čas uložení.
+
 1. V aplikaci [Craft](https://www.craft.do) otevřete **Imagine → API** (Connections) a přidejte
-   API připojení typu **Daily Notes & Tasks** (nebo ke všem dokumentům) s povoleným zápisem.
+   API připojení odpovídajícího typu s povoleným zápisem.
 2. V detailu připojení vytvořte **API klíč** (`pdk_…`) – Craft ho ukáže jen jednou.
 3. Do nastavení rozšíření vložte adresu připojení (`https://connect.craft.do/links/…/api/v1`;
-   stačí i adresa jeho dokumentace `…/link/…/docs/v1`) a API klíč.
-4. Každý Pin vloží na konec dnešního denního zápisu (Daily Note) novou podstránku pojmenovanou
-   podle stránky. Obsahuje odkaz na stránku, shrnutí a čas uložení.
+   stačí i adresa jeho dokumentace `…/link/…/docs/v1`), API klíč a zvolte režim.
 
 ### Pin do Airtable
 
@@ -114,7 +121,7 @@ a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí čís
 
 Do Developer Dashboardu se nahrává **jen ZIP s obsahem složky `extension`**, ne celý repozitář
 (soubor `manifest.json` musí být v kořeni archivu). Hotový balíček je ve složce `release/`,
-např. `release/shrnuti-stranky-0.5.1.zip`. Nový vytvoříte příkazem:
+např. `release/shrnuti-stranky-0.5.2.zip`. Nový vytvoříte příkazem:
 
 ```bash
 npm run zip      # sestaví kód a vytvoří release/shrnuti-stranky-<verze>.zip

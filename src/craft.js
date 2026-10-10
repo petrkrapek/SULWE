@@ -1,6 +1,12 @@
 // Funkce „Pin“ do Craft (craft.do) přes Craft API (https://connect.craft.do/links/<id>/api/v1).
-// Poznámka se vloží jako podstránka (<page>) na konec dnešního denního zápisu (Daily Note);
-// funguje s připojením „Daily Notes & Tasks“ i s připojením ke všem dokumentům.
+// Dva režimy podle typu připojení:
+// - "document": nový samostatný dokument (připojení ke všem dokumentům),
+// - "daily":    podstránka na konci dnešního denního zápisu (připojení Daily Notes & Tasks).
+
+export const CRAFT_MODES = [
+  { id: "document", label: "Nový dokument (připojení ke všem dokumentům)" },
+  { id: "daily", label: "Podstránka v dnešní denní poznámce (připojení Daily Notes & Tasks)" },
+];
 
 export class CraftError extends Error {}
 
@@ -78,23 +84,70 @@ export function noteMarkdown({ title, url, summary }) {
   return `<page><pageTitle>${mdText(title || url).slice(0, 200)}</pageTitle><content>${body}</content></page>`;
 }
 
-/** Vloží poznámku do dnešního denního zápisu v Craft. Vrací { status: "created" }. */
-export async function pinToCraft({ connectionUrl, apiKey, title, url, summary, signal }) {
+// ID nově založeného dokumentu – odpověď může mít různé obaly.
+function firstId(data) {
+  for (const list of [data?.items, data?.documents, data?.data, Array.isArray(data) ? data : null]) {
+    if (Array.isArray(list) && list[0]) return list[0].id ?? list[0].rootBlockId ?? list[0].documentId;
+  }
+  return data?.id ?? data?.rootBlockId ?? data?.documentId;
+}
+
+// Obsah nového dokumentu jako textové bloky: odkaz, řádky shrnutí, čas uložení.
+function noteBlocks({ title, url, summary }) {
+  const when = new Date().toLocaleString("cs-CZ", { dateStyle: "medium", timeStyle: "short" });
+  const lines = [
+    `[${mdText(title || url)}](${mdUrl(url)})`,
+    // Každý řádek shrnutí (odstavec, nadpis, odrážka) je v Craft samostatný blok.
+    ...stripCraftTags(summary)
+      .split("\n")
+      .map((line) => line.trimEnd())
+      .filter((line) => line.trim()),
+    `*Uloženo ${when}*`,
+  ];
+  return lines.map((markdown) => ({ type: "text", markdown }));
+}
+
+// Režim „document“: založí dokument a vloží do něj obsah.
+async function pinAsDocument(base, apiKey, { title, url, summary }, signal) {
+  const docTitle = mdText(title || url).slice(0, 200);
+  const created = await call(base, apiKey, "/documents", { documents: [{ title: docTitle }] }, signal);
+  const pageId = firstId(created);
+  if (!pageId) {
+    throw new CraftError("Craft dokument založil, ale nevrátil jeho ID – shrnutí se nepodařilo vložit.");
+  }
+  await call(
+    base,
+    apiKey,
+    "/blocks",
+    { blocks: noteBlocks({ title, url, summary }), position: { position: "end", pageId } },
+    signal,
+  );
+}
+
+// Režim „daily“: vloží podstránku na konec dnešního denního zápisu.
+async function pinToDailyNote(base, apiKey, note, signal) {
+  await call(
+    base,
+    apiKey,
+    "/blocks",
+    { markdown: noteMarkdown(note), position: { position: "end", date: "today" } },
+    signal,
+  );
+}
+
+/** Uloží poznámku do Craft podle zvoleného režimu. Vrací { status: "created" }. */
+export async function pinToCraft({ connectionUrl, apiKey, mode, title, url, summary, signal }) {
   const base = parseConnectionUrl(connectionUrl ?? "");
   if (!base) {
     throw new CraftError(
       "V nastavení chybí platná adresa API připojení Craft (https://connect.craft.do/links/…/api/v1).",
     );
   }
-  await call(
-    base,
-    apiKey,
-    "/blocks",
-    {
-      markdown: noteMarkdown({ title, url, summary }),
-      position: { position: "end", date: "today" },
-    },
-    signal,
-  );
+  const note = { title, url, summary };
+  if (mode === "daily") {
+    await pinToDailyNote(base, apiKey, note, signal);
+  } else {
+    await pinAsDocument(base, apiKey, note, signal);
+  }
   return { status: "created" };
 }

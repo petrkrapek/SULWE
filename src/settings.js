@@ -31,6 +31,7 @@ export const DEFAULTS = {
   typesafeKey: "",
   pinTarget: "airtable",
   craftUrl: "",
+  craftMode: "document",
   craftKey: "",
   airtableToken: "",
   airtableTarget: "",
