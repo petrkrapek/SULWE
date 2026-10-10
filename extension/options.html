@@ -25,6 +25,7 @@
     #status { color: var(--muted); }
     a { color: var(--accent); }
     code { font-size: 12px; }
+    fieldset { border: none; margin: 0; padding: 0; }
   </style>
 </head>
 <body>
@@ -65,32 +66,67 @@
     </div>
     <p class="hint">Ukládá se jen v tomto prohlížeči a posílá se pouze na api.typesafe.ai.</p>
 
-    <h2>Pin do Airtable</h2>
+    <h2>Pin</h2>
     <p class="hint">
-      Volitelné. S tokenem Airtable se v okně objeví tlačítko <strong>Pin</strong>, které uloží odkaz
-      a shrnutí stránky do tabulky. Chybějící tabulku rozšíření založí samo (sloupce URL, Shrnutí
-      a systémový sloupec Datum a čas); existující záznamy nikdy nepřepisuje.
+      Volitelné. Tlačítko <strong>Pin</strong> v okně uloží odkaz a shrnutí stránky – podle volby
+      do tabulky v Airtable, nebo jako novou poznámku do Craft.
     </p>
-    <label for="airtableToken">Osobní přístupový token Airtable</label>
-    <div class="row">
-      <input id="airtableToken" name="airtableToken" type="password" autocomplete="off" spellcheck="false" placeholder="pat…">
-      <button type="button" class="toggle" data-for="airtableToken">Zobrazit</button>
-    </div>
-    <p class="hint">
-      Vytvoříte ho na <a href="https://airtable.com/create/tokens" target="_blank" rel="noopener">airtable.com/create/tokens</a>
-      s oprávněními <code>data.records:read</code>, <code>data.records:write</code>,
-      <code>schema.bases:read</code> a <code>schema.bases:write</code> a přístupem k vybrané databázi
-      (nebo k pracovnímu prostoru, pokud ji má rozšíření založit).
-    </p>
-    <label for="airtableTarget">Databáze (base) nebo pracovní prostor</label>
-    <input id="airtableTarget" name="airtableTarget" type="text" autocomplete="off" spellcheck="false" placeholder="app… nebo adresa databáze z Airtable">
-    <p class="hint">
-      Vložte ID databáze (<code>app…</code>) nebo rovnou její adresu z prohlížeče. Pokud databázi ještě
-      nemáte, vložte ID pracovního prostoru (<code>wsp…</code>) – rozšíření při prvním Pinu založí databázi
-      „Shrnutí stránek“ a její ID si zapamatuje.
-    </p>
-    <label for="airtableTable">Název tabulky</label>
-    <input id="airtableTable" name="airtableTable" type="text" autocomplete="off">
+    <label for="pinTarget">Kam ukládat</label>
+    <select id="pinTarget" name="pinTarget"></select>
+
+    <fieldset id="pin-airtable" class="pin-target">
+      <p class="hint">
+        Chybějící tabulku rozšíření založí samo (sloupce URL, Shrnutí a systémový sloupec Datum a čas);
+        existující záznamy nikdy nepřepisuje a stejnou adresu neuloží dvakrát.
+      </p>
+      <label for="airtableToken">Osobní přístupový token Airtable</label>
+      <div class="row">
+        <input id="airtableToken" name="airtableToken" type="password" autocomplete="off" spellcheck="false" placeholder="pat…">
+        <button type="button" class="toggle" data-for="airtableToken">Zobrazit</button>
+      </div>
+      <p class="hint">
+        Vytvoříte ho na <a href="https://airtable.com/create/tokens" target="_blank" rel="noopener">airtable.com/create/tokens</a>
+        s oprávněními <code>data.records:read</code>, <code>data.records:write</code>,
+        <code>schema.bases:read</code> a <code>schema.bases:write</code> a přístupem k vybrané databázi
+        (nebo k pracovnímu prostoru, pokud ji má rozšíření založit).
+      </p>
+      <label for="airtableTarget">Databáze (base) nebo pracovní prostor</label>
+      <input id="airtableTarget" name="airtableTarget" type="text" autocomplete="off" spellcheck="false" placeholder="app… nebo adresa databáze z Airtable">
+      <p class="hint">
+        Vložte ID databáze (<code>app…</code>) nebo rovnou její adresu z prohlížeče. Pokud databázi ještě
+        nemáte, vložte ID pracovního prostoru (<code>wsp…</code>) – rozšíření při prvním Pinu založí databázi
+        „Shrnutí stránek“ a její ID si zapamatuje.
+      </p>
+      <label for="airtableTable">Název tabulky</label>
+      <input id="airtableTable" name="airtableTable" type="text" autocomplete="off">
+    </fieldset>
+
+    <fieldset id="pin-craft" class="pin-target">
+      <label for="craftMode">Jak ukládat</label>
+      <select id="craftMode" name="craftMode"></select>
+      <p class="hint">
+        <strong>Nový dokument</strong> – každý Pin založí samostatný dokument pojmenovaný podle stránky
+        (najdete ho mezi nezařazenými). <strong>Denní poznámka</strong> – vloží podstránku na konec
+        dnešního denního zápisu. Obojí obsahuje odkaz, shrnutí a čas uložení. Režim musí odpovídat
+        typu připojení v Craft.
+      </p>
+      <label for="craftUrl">Adresa API připojení Craft</label>
+      <input id="craftUrl" name="craftUrl" type="url" autocomplete="off" spellcheck="false" placeholder="https://connect.craft.do/links/…/api/v1">
+      <p class="hint">
+        V aplikaci Craft otevřete <strong>Imagine → API</strong> (Connections), přidejte připojení
+        ke <strong>všem dokumentům</strong>, nebo typu <strong>Daily Notes &amp; Tasks</strong>
+        s povoleným zápisem a vložte jeho adresu. Stačí i adresa jeho dokumentace (…/link/…/docs/v1).
+      </p>
+      <label for="craftKey">API klíč připojení</label>
+      <div class="row">
+        <input id="craftKey" name="craftKey" type="password" autocomplete="off" spellcheck="false" placeholder="pdk_…">
+        <button type="button" class="toggle" data-for="craftKey">Zobrazit</button>
+      </div>
+      <p class="hint">
+        Klíč vytvoříte v detailu připojení (přístup přes API klíč). Craft ho ukáže jen jednou –
+        zkopírujte ho hned.
+      </p>
+    </fieldset>
 
     <div class="actions">
       <button type="submit" class="primary">Uložit</button>

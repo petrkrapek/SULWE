@@ -1,0 +1,125 @@
+# Changelog
+
+Všechny podstatné změny rozšíření **Shrnutí stránky** jsou zapsané v tomto souboru.
+
+Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/)
+a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
+
+## [0.5.3] – 2026-10-10
+
+### Opraveno
+- Craft: když je cílová denní poznámka v koši, okno místo technické chyby
+  „Craft požadavek odmítl (400)“ vysvětlí, že je potřeba poznámku v Craft obnovit
+  nebo z koše trvale smazat.
+- Craft: text chyby se čte i z odpovědí ve tvaru `{"errors": [...]}`, takže jsou
+  čitelnější i ostatní chybové hlášky.
+
+## [0.5.2] – 2026-10-10
+
+### Přidáno
+- Craft: volba **Jak ukládat** – *Nový dokument* (pro připojení ke všem dokumentům)
+  nebo *Denní poznámka* (pro připojení Daily Notes & Tasks).
+
+### Změněno
+- Výchozí režim Craft je opět *Nový dokument* (chování verze 0.5.0).
+
+## [0.5.1] – 2026-10-10
+
+### Přidáno
+- Craft: ukládání jako podstránka na konec dnešního denního zápisu (Daily Note) podle
+  oficiální dokumentace Craft API.
+- Nastavení přijme i adresu dokumentace připojení (`…/link/…/docs/v1`) a převede ji
+  na adresu API.
+
+### Změněno
+- Craft: API klíč připojení je povinný; bez něj se tlačítko Pin nezobrazí.
+
+### Opraveno
+- Craft: závorky a mezery v adrese stránky se v odkazu správně kódují.
+
+## [0.5.0] – 2026-10-10
+
+### Přidáno
+- Pin: volba cíle **Airtable** nebo **Craft**. Pin do Craft založí nový dokument
+  pojmenovaný podle stránky s odkazem, shrnutím a časem uložení.
+- Oprávnění pro `connect.craft.do`.
+
+### Změněno
+- Stav „Připnuto“ se pamatuje zvlášť pro každý cíl.
+
+## [0.4.2] – 2026-10-10
+
+### Změněno
+- Názvy modelů se zobrazují bez předpony „Claude“ (Opus 5.5, Sonnet 5.5, Haiku 5.5)
+  ve výběru modelu, v okně se shrnutím i v upozorněních.
+
+## [0.4.1] – 2026-10-10
+
+### Opraveno
+- Okno už neroluje dvakrát, když je zobrazené ověření i Pin: celé okno se vejde
+  do limitu 600 px a roluje jen shrnutí.
+
+### Změněno
+- Informace o modelu a uložení se přesunula pod název stránky; patička obsahuje jen
+  tlačítka na jednom řádku.
+- Tlačítko Pin po uložení vždy ukáže „Připnuto ✓“ (podrobnosti v bublině).
+
+## [0.4.0] – 2026-10-10
+
+### Přidáno
+- **Automatická volba modelu podle textu**: TypeSafe AI posoudí náročnost stránky –
+  běžné zprávy shrne Haiku 5.5, odbornější články Sonnet 5.5 a vysoce odborné texty
+  Opus 5.5. Bez klíče TypeSafe nebo při chybě se použije Sonnet 5.5 s upozorněním.
+
+## [0.3.1] – 2026-10-10 [YANKED]
+
+Úprava výšky okna, na přání vrácena zpět. Řešení přinesla až verze 0.4.1.
+
+## [0.3.0] – 2026-10-10
+
+### Přidáno
+- **Pin do Airtable**: uloží odkaz a shrnutí stránky do tabulky. Chybějící tabulku
+  založí (sloupce URL, Shrnutí a systémový Datum a čas), případně založí i celou
+  databázi v zadaném pracovním prostoru.
+- Do existující tabulky se jen přidávají záznamy; stejná adresa se neuloží dvakrát.
+- Oprávnění pro `api.airtable.com`.
+
+### Změněno
+- Tlačítko „Shrnout znovu“ přejmenováno na „Znovu“.
+
+## [0.2.0] – 2026-10-10
+
+### Přidáno
+- **Ověření fake news** přes TypeSafe AI (model Jev): tlačítko *Ověřit* zařadí stránku
+  jako věrohodnou, názor/satiru, zavádějící nebo pravděpodobné fake news a odhadne
+  míru manipulativního jazyka.
+- Příkaz `npm run zip` a hotový balíček pro Chrome Web Store ve složce `release/`.
+
+### Zabezpečení
+- Adresa stránky se do AI služeb posílá bez parametrů a kotvy (tokeny, osobní údaje).
+- Text stránky nemůže uzavřít strukturální značky v promptu.
+- Model Jev bere pokusy stránky ovlivnit hodnocení jako známku manipulace.
+- Přísná Content Security Policy – stránky rozšíření se smějí připojit jen
+  k potřebným API.
+
+## [0.1.0] – 2026-10-10
+
+### Přidáno
+- První verze rozšíření: po kliknutí na ikonu přečte text aktuální stránky a pomocí AI
+  zobrazí průběžně vypisované shrnutí v malém okně.
+- Nastavení API klíče, modelu, jazyka (čeština, angličtina, jazyk stránky) a délky
+  shrnutí (krátké, střední, podrobné).
+- Kopírování shrnutí a jeho opětovné vytvoření.
+- Hotová shrnutí se pamatují do zavření prohlížeče.
+
+[0.5.3]: https://github.com/petrkrapek/SULWE/compare/62697f8...b224fd5
+[0.5.2]: https://github.com/petrkrapek/SULWE/compare/f787a91...62697f8
+[0.5.1]: https://github.com/petrkrapek/SULWE/compare/0e1d25d...f787a91
+[0.5.0]: https://github.com/petrkrapek/SULWE/compare/e4f9fa1...0e1d25d
+[0.4.2]: https://github.com/petrkrapek/SULWE/compare/f4a1605...e4f9fa1
+[0.4.1]: https://github.com/petrkrapek/SULWE/compare/39ac7a2...f4a1605
+[0.4.0]: https://github.com/petrkrapek/SULWE/compare/1e11b85...39ac7a2
+[0.3.1]: https://github.com/petrkrapek/SULWE/commit/4be1996
+[0.3.0]: https://github.com/petrkrapek/SULWE/compare/992f88a...8417e6a
+[0.2.0]: https://github.com/petrkrapek/SULWE/compare/8a6169d...992f88a
+[0.1.0]: https://github.com/petrkrapek/SULWE/commit/8a6169d
