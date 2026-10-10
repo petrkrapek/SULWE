@@ -59,6 +59,18 @@ a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí čís
 | Jazyk shrnutí | čeština, angličtina, jazyk stránky |
 | Délka | krátké, střední, podrobné |
 
+## Nahrání do Chrome Web Store
+
+Do Developer Dashboardu se nahrává **jen ZIP s obsahem složky `extension`**, ne celý repozitář
+(soubor `manifest.json` musí být v kořeni archivu). Hotový balíček je ve složce `release/`,
+např. `release/shrnuti-stranky-0.2.0.zip`. Nový vytvoříte příkazem:
+
+```bash
+npm run zip      # sestaví kód a vytvoří release/shrnuti-stranky-<verze>.zip
+```
+
+Před každým dalším nahráním zvyšte `version` v `extension/manifest.json`.
+
 ## Vývoj
 
 Zdrojové kódy jsou ve složce `src/`, do `extension/dist/` se sestavují pomocí esbuild
