@@ -8,7 +8,10 @@
 </head>
 <body>
   <header>
-    <h1 id="page-title">Shrnutí stránky</h1>
+    <div class="heading">
+      <h1 id="page-title">Shrnutí stránky</h1>
+      <div id="meta" class="meta"></div>
+    </div>
     <button id="options" class="icon-button" title="Nastavení" aria-label="Nastavení">⚙</button>
   </header>
   <div id="verdict" class="verdict" hidden><span class="dot"></span><span class="verdict-text"></span></div>
@@ -23,7 +26,6 @@
     <div id="summary" class="summary" aria-live="polite"></div>
   </main>
   <footer>
-    <span id="meta" class="meta"></span>
     <button id="verify" hidden>Ověřit</button>
     <button id="copy" disabled>Kopírovat</button>
     <button id="regenerate" disabled title="Vytvořit nové shrnutí">Znovu</button>
