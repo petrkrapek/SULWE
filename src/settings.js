@@ -24,6 +24,9 @@ export const DEFAULTS = {
   language: "cs",
   length: "medium",
   typesafeKey: "",
+  airtableToken: "",
+  airtableTarget: "",
+  airtableTable: "Shrnutí stránek",
 };
 
 export async function loadSettings() {

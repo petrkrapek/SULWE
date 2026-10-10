@@ -1,4 +1,5 @@
 import { loadSettings, saveSettings, MODELS, LANGUAGES, LENGTHS } from "./settings.js";
+import { DEFAULT_TABLE } from "./airtable.js";
 
 const form = document.getElementById("form");
 const status = document.getElementById("status");
@@ -23,6 +24,9 @@ form.language.value = settings.language;
 form.length.value = settings.length;
 
 form.typesafeKey.value = settings.typesafeKey;
+form.airtableToken.value = settings.airtableToken;
+form.airtableTarget.value = settings.airtableTarget;
+form.airtableTable.value = settings.airtableTable;
 
 for (const button of document.querySelectorAll(".toggle")) {
   button.addEventListener("click", () => {
@@ -41,6 +45,9 @@ form.addEventListener("submit", async (e) => {
     language: form.language.value,
     length: form.length.value,
     typesafeKey: form.typesafeKey.value.trim(),
+    airtableToken: form.airtableToken.value.trim(),
+    airtableTarget: form.airtableTarget.value.trim(),
+    airtableTable: form.airtableTable.value.trim() || DEFAULT_TABLE,
   });
   // Po změně nastavení zahodíme uložená shrnutí a ověření, ať se vytvoří znovu.
   await chrome.storage.session.clear();

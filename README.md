@@ -34,6 +34,28 @@ Posuzuje ho rozhodovací model Jev (`POST https://api.typesafe.ai/v1/systemone`,
 ze začátku textu stránky (prvních 20 000 znaků). Jde o automatický odhad, ne o ověření
 faktů novinářem. Bez klíče TypeSafe je funkce vypnutá a tlačítko se nezobrazuje.
 
+## Pin do Airtable (volitelné)
+
+Tlačítko **Pin** uloží odkaz na stránku a její shrnutí do tabulky v [Airtable](https://airtable.com).
+
+1. Na [airtable.com/create/tokens](https://airtable.com/create/tokens) vytvořte osobní přístupový token
+   s oprávněními `data.records:read`, `data.records:write`, `schema.bases:read`, `schema.bases:write`
+   a přidejte mu přístup ke své databázi (případně k pracovnímu prostoru).
+2. V nastavení rozšíření vyplňte token a **databázi** – ID `app…` nebo rovnou adresu databáze
+   z prohlížeče. Pokud databázi ještě nemáte, vložte ID pracovního prostoru `wsp…` a rozšíření
+   při prvním Pinu založí databázi „Shrnutí stránek“.
+3. Po dokončení shrnutí klikněte v okně na **Pin**.
+
+Chování:
+- Když tabulka (výchozí název „Shrnutí stránek“) neexistuje, založí se se sloupci
+  **URL**, **Shrnutí** a **Datum a čas**. Datum a čas je systémový sloupec *Created time*,
+  který Airtable vyplní sám. Pokud by ho API odmítlo vytvořit, založí se obyčejné datum
+  a čas doplní rozšíření.
+- Do existující tabulky se jen přidávají nové záznamy; chybějící sloupce se doplní,
+  nic se nemaže ani nepřepisuje.
+- Stejná adresa se uloží jen jednou – u už uložené stránky se zobrazí „Už připnuto“.
+- Do Airtable se ukládá celá adresa stránky včetně parametrů, aby odkaz fungoval.
+
 ## Jak to funguje
 
 - Po kliknutí na ikonu rozšíření přečte text aktuální stránky (jen té jedné, jen v tu chvíli –
@@ -42,11 +64,11 @@ faktů novinářem. Bez klíče TypeSafe je funkce vypnutá a tlačítko se nezo
 - Hotové shrnutí si pamatuje do zavření prohlížeče, takže opakované otevření nic nestojí.
   Tlačítko **Shrnout znovu** vytvoří nové.
 - API klíče jsou uložené jen lokálně v prohlížeči (`chrome.storage.local`) a posílají se pouze
-  na `api.anthropic.com`, resp. `api.typesafe.ai`.
+  na `api.anthropic.com`, `api.typesafe.ai`, resp. `api.airtable.com`.
 - Adresa stránky se do API posílá bez parametrů a kotvy (`?…`, `#…`), protože v nich
   mohou být přihlašovací tokeny nebo osobní údaje.
 - Stránky rozšíření mají přísnou Content Security Policy: smějí spouštět jen vlastní skripty
-  a připojovat se jen k těmto dvěma API.
+  a připojovat se jen k těmto třem API.
 
 Rozšíření nefunguje na interních stránkách Chromu (`chrome://…`), v Chrome Web Store
 a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí číst obsah.
@@ -63,7 +85,7 @@ a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí čís
 
 Do Developer Dashboardu se nahrává **jen ZIP s obsahem složky `extension`**, ne celý repozitář
 (soubor `manifest.json` musí být v kořeni archivu). Hotový balíček je ve složce `release/`,
-např. `release/shrnuti-stranky-0.2.0.zip`. Nový vytvoříte příkazem:
+např. `release/shrnuti-stranky-0.3.0.zip`. Nový vytvoříte příkazem:
 
 ```bash
 npm run zip      # sestaví kód a vytvoří release/shrnuti-stranky-<verze>.zip
@@ -95,6 +117,7 @@ src/
   popup.js          ← logika okna (čtení stránky, zobrazení shrnutí)
   summarize.js      ← volání Claude API a prompt
   factcheck.js      ← ověření fake news přes TypeSafe AI (Jev)
+  airtable.js       ← Pin: uložení odkazu a shrnutí do Airtable
   markdown.js       ← bezpečné vykreslení Markdownu
   page.js           ← očištění dat stránky před odesláním (adresa bez parametrů)
   settings.js       ← nastavení a jejich výchozí hodnoty
