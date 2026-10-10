@@ -51,7 +51,15 @@ async function call(base, apiKey, path, body, signal) {
   }
   if (response.ok) return data;
 
-  const detail = String(data?.error?.message ?? data?.message ?? data?.error ?? text ?? "").slice(0, 200);
+  // Craft vrací chyby jako { error, code } nebo { errors: [{ code, message }] }.
+  const first = Array.isArray(data?.errors) ? data.errors[0] : null;
+  const detail = String(first?.message ?? data?.error?.message ?? data?.message ?? data?.error ?? text ?? "").slice(0, 200);
+  if (/in trash/i.test(detail)) {
+    throw new CraftError(
+      "Cílový dokument je v Craft v koši. U denní poznámky: obnovte dnešní denní poznámku z koše, " +
+        "nebo ji z koše trvale smažte – Craft pak při dalším Pinu použije novou.",
+    );
+  }
   if (data?.code === "MISSING_AUTH_HEADER" || (response.status === 401 && !apiKey)) {
     throw new CraftError("Připojení Craft vyžaduje API klíč (pdk_…). Vyplňte ho v nastavení rozšíření.");
   }
