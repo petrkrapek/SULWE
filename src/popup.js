@@ -1,8 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { loadSettings, saveSettings, MODELS } from "./settings.js";
+import { loadSettings, saveSettings, MODELS, AUTO_MODEL, AUTO_FALLBACK_MODEL } from "./settings.js";
 import { summarizePage, describeError } from "./summarize.js";
 import { renderMarkdown } from "./markdown.js";
-import { factCheckPage, FactCheckError, VERDICTS } from "./factcheck.js";
+import { factCheckPage, chooseModel, FactCheckError, VERDICTS } from "./factcheck.js";
 import { pinPage, parseTarget, AirtableError } from "./airtable.js";
 
 // Horní mez délky textu stránky (znaky). Běžné stránky jsou mnohem kratší.
@@ -106,6 +106,22 @@ function getPage(tab) {
   return pagePromise;
 }
 
+// Automatická volba modelu přes TypeSafe AI; při chybě použijeme záložní model a upozorníme.
+async function pickModel(page, settings, signal) {
+  if (!settings.typesafeKey) {
+    showNotice(`Pro automatickou volbu modelu chybí klíč TypeSafe AI – použit ${modelLabel(AUTO_FALLBACK_MODEL)}.`);
+    return AUTO_FALLBACK_MODEL;
+  }
+  setStatus("Vybírám model…");
+  try {
+    return await chooseModel({ page, apiKey: settings.typesafeKey, signal });
+  } catch (err) {
+    if (signal.aborted) throw err;
+    showNotice(`Automatická volba modelu selhala (${err.message}) – použit ${modelLabel(AUTO_FALLBACK_MODEL)}.`);
+    return AUTO_FALLBACK_MODEL;
+  }
+}
+
 const cacheKey = (tab) => `summary:${tab.url}`;
 const verdictKey = (tab) => `verdict:${tab.url}`;
 const pinKey = (tab) => `pin:${tab.url}`;
@@ -142,7 +158,7 @@ async function summarize({ force = false } = {}) {
       if (cached) {
         currentText = cached.text;
         renderMarkdown(els.summary, currentText);
-        els.meta.textContent = `${modelLabel(cached.model)} · uloženo`;
+        els.meta.textContent = `${modelLabel(cached.model)}${cached.auto ? " · auto" : ""} · uloženo`;
         setSummaryReady(true);
         els.regenerate.disabled = false;
         setStatus("");
@@ -157,10 +173,18 @@ async function summarize({ force = false } = {}) {
       showNotice("Stránka je velmi dlouhá – shrnutí vychází jen z její první části.");
     }
 
+    let model = settings.model;
+    let auto = false;
+    if (model === AUTO_MODEL) {
+      auto = true;
+      model = await pickModel(page, settings, signal);
+      if (signal.aborted) return;
+    }
+
     setStatus("Shrnuji…");
     const message = await summarizePage({
       page,
-      settings,
+      settings: { ...settings, model },
       signal,
       onText: (delta) => {
         if (signal.aborted) return;
@@ -180,10 +204,10 @@ async function summarize({ force = false } = {}) {
       showNotice("Shrnutí bylo zkráceno.");
     }
 
-    els.meta.textContent = modelLabel(message.model);
+    els.meta.textContent = modelLabel(message.model) + (auto ? " · auto" : "");
     setSummaryReady(Boolean(currentText));
     await chrome.storage.session.set({
-      [cacheKey(tab)]: { text: currentText, model: message.model },
+      [cacheKey(tab)]: { text: currentText, model: message.model, auto },
     });
   } catch (err) {
     if (err instanceof Anthropic.APIUserAbortError || signal.aborted) return;

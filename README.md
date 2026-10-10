@@ -34,6 +34,20 @@ Posuzuje ho rozhodovací model Jev (`POST https://api.typesafe.ai/v1/systemone`,
 ze začátku textu stránky (prvních 20 000 znaků). Jde o automatický odhad, ne o ověření
 faktů novinářem. Bez klíče TypeSafe je funkce vypnutá a tlačítko se nezobrazuje.
 
+## Automatická volba modelu
+
+Při volbě **Automaticky podle textu** nejdřív model Jev od TypeSafe AI posoudí náročnost stránky
+a podle ní se vybere model Claude:
+
+| Druh textu | Model |
+|---|---|
+| Běžná zpráva, blog, oznámení, jednoduchý text | Claude Haiku 5.5 |
+| Odbornější článek, analýza, návod, recenze | Claude Sonnet 5.5 |
+| Náročný, vysoce odborný text (studie, právo, medicína, technika) | Claude Opus 5.5 |
+
+Vyžaduje klíč TypeSafe AI. Bez něj, nebo když posouzení selže, se použije Claude Sonnet 5.5
+a okno na to upozorní. V patičce okna je u modelu poznámka „auto“.
+
 ## Pin do Airtable (volitelné)
 
 Tlačítko **Pin** uloží odkaz na stránku a její shrnutí do tabulky v [Airtable](https://airtable.com).
@@ -77,7 +91,7 @@ a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí čís
 
 | Volba | Možnosti |
 |---|---|
-| Model | Claude Opus 5.5 (výchozí, nejkvalitnější), Claude Sonnet 5.5, Claude Haiku 5.5 (nejlevnější) |
+| Model | Automaticky podle textu, Claude Opus 5.5 (výchozí, nejkvalitnější), Claude Sonnet 5.5, Claude Haiku 5.5 (nejlevnější) |
 | Jazyk shrnutí | čeština, angličtina, jazyk stránky |
 | Délka | krátké, střední, podrobné |
 
@@ -85,7 +99,7 @@ a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí čís
 
 Do Developer Dashboardu se nahrává **jen ZIP s obsahem složky `extension`**, ne celý repozitář
 (soubor `manifest.json` musí být v kořeni archivu). Hotový balíček je ve složce `release/`,
-např. `release/shrnuti-stranky-0.3.0.zip`. Nový vytvoříte příkazem:
+např. `release/shrnuti-stranky-0.4.0.zip`. Nový vytvoříte příkazem:
 
 ```bash
 npm run zip      # sestaví kód a vytvoří release/shrnuti-stranky-<verze>.zip

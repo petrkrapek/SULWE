@@ -1,4 +1,4 @@
-import { loadSettings, saveSettings, MODELS, LANGUAGES, LENGTHS } from "./settings.js";
+import { loadSettings, saveSettings, MODELS, LANGUAGES, LENGTHS, AUTO_MODEL } from "./settings.js";
 import { DEFAULT_TABLE } from "./airtable.js";
 
 const form = document.getElementById("form");
@@ -20,6 +20,11 @@ fillSelect(form.length, LENGTHS);
 const settings = await loadSettings();
 form.apiKey.value = settings.apiKey;
 form.model.value = settings.model;
+
+const modelHint = document.getElementById("model-hint");
+const updateModelHint = () => (modelHint.hidden = form.model.value !== AUTO_MODEL);
+form.model.addEventListener("change", updateModelHint);
+updateModelHint();
 form.language.value = settings.language;
 form.length.value = settings.length;
 
