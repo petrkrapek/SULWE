@@ -58,10 +58,14 @@ for (const button of document.querySelectorAll(".toggle")) {
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const craftUrl = form.craftUrl.value.trim();
-  if (craftUrl && !parseConnectionUrl(craftUrl)) {
-    status.textContent = "Adresa připojení Craft musí začínat https://connect.craft.do/";
-    return;
+  let craftUrl = form.craftUrl.value.trim();
+  if (craftUrl) {
+    const normalized = parseConnectionUrl(craftUrl);
+    if (!normalized) {
+      status.textContent = "Adresa připojení Craft musí mít tvar https://connect.craft.do/links/…/api/v1";
+      return;
+    }
+    craftUrl = form.craftUrl.value = normalized;
   }
   await saveSettings({
     pinTarget: form.pinTarget.value,

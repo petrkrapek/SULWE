@@ -44,7 +44,7 @@ export const PIN_TARGETS = [
 
 /** Je zvolený cíl Pinu nastavený tak, že se dá použít? */
 export function pinConfigured(settings) {
-  return settings.pinTarget === "craft" ? Boolean(settings.craftUrl) : Boolean(settings.airtableToken);
+  return settings.pinTarget === "craft" ? Boolean(settings.craftUrl && settings.craftKey) : Boolean(settings.airtableToken);
 }
 
 export async function loadSettings() {
