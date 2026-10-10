@@ -85,7 +85,7 @@ a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí čís
 
 Do Developer Dashboardu se nahrává **jen ZIP s obsahem složky `extension`**, ne celý repozitář
 (soubor `manifest.json` musí být v kořeni archivu). Hotový balíček je ve složce `release/`,
-např. `release/shrnuti-stranky-0.3.0.zip`. Nový vytvoříte příkazem:
+např. `release/shrnuti-stranky-0.3.1.zip`. Nový vytvoříte příkazem:
 
 ```bash
 npm run zip      # sestaví kód a vytvoří release/shrnuti-stranky-<verze>.zip

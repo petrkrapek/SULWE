@@ -57,6 +57,13 @@ function modelLabel(id) {
   return MODELS.find((m) => m.id === id)?.label.replace(/\s*\(.*\)$/, "") ?? id;
 }
 
+// Do patičky se vejde jen krátký text – plné znění je v bublině po najetí myší.
+function setMeta(model, note = "") {
+  const full = modelLabel(model);
+  els.meta.textContent = [full.replace(/^Claude\s+/, ""), note].filter(Boolean).join(" · ");
+  els.meta.title = [full, note && "shrnutí uložené z dřívějška"].filter(Boolean).join(" · ");
+}
+
 // Funkce běží uvnitř stránky (injektuje ji chrome.scripting) – nesmí používat nic zvenku.
 function extractPageContent() {
   const pick = () => {
@@ -119,6 +126,7 @@ async function summarize({ force = false } = {}) {
   showNotice("");
   els.summary.replaceChildren();
   els.meta.textContent = "";
+  els.meta.title = "";
   setSummaryReady(false);
   els.regenerate.disabled = true;
   currentText = "";
@@ -142,7 +150,7 @@ async function summarize({ force = false } = {}) {
       if (cached) {
         currentText = cached.text;
         renderMarkdown(els.summary, currentText);
-        els.meta.textContent = `${modelLabel(cached.model)} · uloženo`;
+        setMeta(cached.model, "uloženo");
         setSummaryReady(true);
         els.regenerate.disabled = false;
         setStatus("");
@@ -180,7 +188,7 @@ async function summarize({ force = false } = {}) {
       showNotice("Shrnutí bylo zkráceno.");
     }
 
-    els.meta.textContent = modelLabel(message.model);
+    setMeta(message.model);
     setSummaryReady(Boolean(currentText));
     await chrome.storage.session.set({
       [cacheKey(tab)]: { text: currentText, model: message.model },
