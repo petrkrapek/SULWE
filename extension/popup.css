@@ -57,3 +57,23 @@ footer {
   border-top: 1px solid var(--border);
 }
 footer .meta { flex: 1; color: var(--muted); font-size: 12px; }
+.verdict {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  border-bottom: 1px solid var(--border);
+}
+.verdict .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  flex: none;
+}
+.verdict[data-tone="ok"] .dot { background: var(--ok); }
+.verdict[data-tone="warn"] .dot { background: var(--warn); }
+.verdict[data-tone="bad"] .dot { background: var(--bad); }
+.verdict[data-tone="bad"] { color: var(--bad); }

@@ -22,11 +22,16 @@ form.model.value = settings.model;
 form.language.value = settings.language;
 form.length.value = settings.length;
 
-document.getElementById("toggle-key").addEventListener("click", (e) => {
-  const hidden = form.apiKey.type === "password";
-  form.apiKey.type = hidden ? "text" : "password";
-  e.target.textContent = hidden ? "Skrýt" : "Zobrazit";
-});
+form.typesafeKey.value = settings.typesafeKey;
+
+for (const button of document.querySelectorAll(".toggle")) {
+  button.addEventListener("click", () => {
+    const input = form[button.dataset.for];
+    const hidden = input.type === "password";
+    input.type = hidden ? "text" : "password";
+    button.textContent = hidden ? "Skrýt" : "Zobrazit";
+  });
+}
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -35,8 +40,9 @@ form.addEventListener("submit", async (e) => {
     model: form.model.value,
     language: form.language.value,
     length: form.length.value,
+    typesafeKey: form.typesafeKey.value.trim(),
   });
-  // Po změně nastavení zahodíme uložená shrnutí, ať se vytvoří znovu.
+  // Po změně nastavení zahodíme uložená shrnutí a ověření, ať se vytvoří znovu.
   await chrome.storage.session.clear();
   status.textContent = "Uloženo.";
   setTimeout(() => (status.textContent = ""), 2000);

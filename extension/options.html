@@ -7,6 +7,7 @@
   <style>
     body { max-width: 560px; margin: 0 auto; padding: 24px 16px; }
     h1 { font-size: 20px; margin: 0 0 16px; }
+    h2 { font-size: 15px; margin: 32px 0 4px; padding-top: 20px; border-top: 1px solid var(--border); }
     label { display: block; font-weight: 600; margin: 16px 0 4px; }
     .hint { color: var(--muted); font-size: 13px; margin: 4px 0 0; }
     input, select {
@@ -31,7 +32,7 @@
     <label for="apiKey">API klíč Anthropic</label>
     <div class="row">
       <input id="apiKey" name="apiKey" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-…">
-      <button type="button" id="toggle-key">Zobrazit</button>
+      <button type="button" class="toggle" data-for="apiKey">Zobrazit</button>
     </div>
     <p class="hint">
       Klíč získáte na <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>.
@@ -46,6 +47,18 @@
 
     <label for="length">Délka shrnutí</label>
     <select id="length" name="length"></select>
+
+    <h2>Ověření fake news</h2>
+    <p class="hint">
+      Volitelné. S klíčem od <a href="https://console.typesafe.ai/home" target="_blank" rel="noopener">TypeSafe AI</a>
+      se v okně rozšíření objeví tlačítko <strong>Ověřit</strong>, které odhadne věrohodnost stránky.
+    </p>
+    <label for="typesafeKey">API klíč TypeSafe AI</label>
+    <div class="row">
+      <input id="typesafeKey" name="typesafeKey" type="password" autocomplete="off" spellcheck="false" placeholder="Nevyplněno = vypnuto">
+      <button type="button" class="toggle" data-for="typesafeKey">Zobrazit</button>
+    </div>
+    <p class="hint">Ukládá se jen v tomto prohlížeči a posílá se pouze na api.typesafe.ai.</p>
 
     <div class="actions">
       <button type="submit" class="primary">Uložit</button>

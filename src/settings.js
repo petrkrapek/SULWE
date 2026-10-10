@@ -23,6 +23,7 @@ export const DEFAULTS = {
   model: "claude-opus-5-5",
   language: "cs",
   length: "medium",
+  typesafeKey: "",
 };
 
 export async function loadSettings() {

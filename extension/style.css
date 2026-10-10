@@ -10,6 +10,9 @@
   --error-fg: #82071e;
   --notice-bg: #fff8c5;
   --notice-fg: #4d2d00;
+  --ok: #1a7f37;
+  --warn: #bf8700;
+  --bad: #cf222e;
   color-scheme: light dark;
 }
 @media (prefers-color-scheme: dark) {
@@ -24,6 +27,9 @@
     --error-fg: #ffa198;
     --notice-bg: #3a2e0a;
     --notice-fg: #e3c46f;
+    --ok: #3fb950;
+    --warn: #d29922;
+    --bad: #f85149;
   }
 }
 * { box-sizing: border-box; }

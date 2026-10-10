@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Shrnutí stránky",
-  "version": "0.1.0",
-  "description": "Pomocí AI (Claude) shrne aktuální webovou stránku a zobrazí shrnutí v malém okně.",
+  "version": "0.2.0",
+  "description": "Pomocí AI shrne aktuální webovou stránku a volitelně posoudí, zda nejde o fake news.",
   "action": {
     "default_title": "Shrnout stránku",
     "default_popup": "popup.html",
@@ -20,6 +20,13 @@
     "128": "icons/icon128.png"
   },
   "options_page": "options.html",
-  "permissions": ["activeTab", "scripting", "storage"],
-  "host_permissions": ["https://api.anthropic.com/*"]
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://api.anthropic.com/*",
+    "https://api.typesafe.ai/*"
+  ]
 }

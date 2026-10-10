@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { loadSettings, MODELS } from "./settings.js";
 import { summarizePage, describeError } from "./summarize.js";
 import { renderMarkdown } from "./markdown.js";
+import { factCheckPage, FactCheckError, VERDICTS } from "./factcheck.js";
 
 // Horní mez délky textu stránky (znaky). Běžné stránky jsou mnohem kratší.
 const MAX_CHARS = 400_000;
@@ -19,10 +20,14 @@ const els = {
   copy: $("copy"),
   options: $("options"),
   openOptions: $("open-options"),
+  verify: $("verify"),
+  verdict: $("verdict"),
 };
 
 let currentText = "";
 let controller = null;
+let verifyController = null;
+let pagePromise = null;
 
 function setStatus(text) {
   els.status.textContent = text;
@@ -80,7 +85,20 @@ async function readPage(tab) {
   }
 }
 
+// Text stránky čteme jen jednou – sdílí ho shrnutí i ověření.
+function getPage(tab) {
+  pagePromise ??= readPage(tab).then((page) => {
+    if (!page.text || page.text.length < 50) {
+      throw new Error("Na stránce jsem nenašel žádný text ke shrnutí.");
+    }
+    return page;
+  });
+  pagePromise.catch(() => (pagePromise = null));
+  return pagePromise;
+}
+
 const cacheKey = (tab) => `summary:${tab.url}`;
+const verdictKey = (tab) => `verdict:${tab.url}`;
 
 async function summarize({ force = false } = {}) {
   controller?.abort();
@@ -123,10 +141,7 @@ async function summarize({ force = false } = {}) {
     }
 
     setStatus("Čtu stránku…");
-    const page = await readPage(tab);
-    if (!page.text || page.text.length < 50) {
-      throw new Error("Na stránce jsem nenašel žádný text ke shrnutí.");
-    }
+    const page = { ...(await getPage(tab)) };
     if (page.text.length > MAX_CHARS) {
       page.text = page.text.slice(0, MAX_CHARS);
       showNotice("Stránka je velmi dlouhá – shrnutí vychází jen z její první části.");
@@ -169,6 +184,56 @@ async function summarize({ force = false } = {}) {
   }
 }
 
+const MANIPULATION_LABELS = ["žádná", "mírná", "výrazná", "silná"];
+
+function renderVerdict(result) {
+  const verdict = VERDICTS[result.choice];
+  els.verdict.dataset.tone = verdict.tone;
+  const parts = [verdict.label];
+  if (typeof result.probability === "number") parts.push(`${Math.round(result.probability * 100)} %`);
+  if (typeof result.manipulation === "number") {
+    const level = Math.min(3, Math.max(0, Math.round(result.manipulation)));
+    parts.push(`manipulace ${MANIPULATION_LABELS[level]}`);
+  }
+  els.verdict.querySelector(".verdict-text").textContent = parts.join(" · ");
+  els.verdict.title = "Odhad modelu Jev (TypeSafe AI) – nejde o ověření faktů novinářem.";
+  els.verdict.hidden = false;
+}
+
+async function verify({ force = false } = {}) {
+  verifyController?.abort();
+  verifyController = new AbortController();
+  const { signal } = verifyController;
+
+  const settings = await loadSettings();
+  if (!settings.typesafeKey) return;
+
+  els.verify.disabled = true;
+  els.verify.textContent = "Ověřuji…";
+  showError("");
+  try {
+    const tab = await getActiveTab();
+    if (!force) {
+      const cached = (await chrome.storage.session.get(verdictKey(tab)))[verdictKey(tab)];
+      if (cached) return renderVerdict(cached);
+    }
+    const page = await getPage(tab);
+    const result = await factCheckPage({ page, apiKey: settings.typesafeKey, signal });
+    if (signal.aborted) return;
+    renderVerdict(result);
+    await chrome.storage.session.set({ [verdictKey(tab)]: result });
+  } catch (err) {
+    if (signal.aborted) return;
+    showError(err instanceof FactCheckError ? err.message : `Ověření selhalo: ${err.message}`);
+  } finally {
+    if (!signal.aborted) {
+      els.verify.disabled = false;
+      els.verify.textContent = "Ověřit";
+    }
+  }
+}
+
+els.verify.addEventListener("click", () => verify({ force: !els.verdict.hidden }));
 els.regenerate.addEventListener("click", () => summarize({ force: true }));
 els.copy.addEventListener("click", async () => {
   await navigator.clipboard.writeText(currentText);
@@ -180,3 +245,14 @@ els.options.addEventListener("click", openOptions);
 els.openOptions.addEventListener("click", openOptions);
 
 summarize();
+
+// Tlačítko „Ověřit“ je vidět jen s nastaveným klíčem TypeSafe; uložený výsledek se ukáže hned.
+loadSettings().then((settings) => {
+  els.verify.hidden = !settings.typesafeKey;
+  if (settings.typesafeKey) {
+    getActiveTab().then(async (tab) => {
+      const cached = (await chrome.storage.session.get(verdictKey(tab)))[verdictKey(tab)];
+      if (cached) renderVerdict(cached);
+    });
+  }
+});
