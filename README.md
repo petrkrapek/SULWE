@@ -46,7 +46,7 @@ a podle ní se vybere model Claude:
 | Náročný, vysoce odborný text (studie, právo, medicína, technika) | Claude Opus 5.5 |
 
 Vyžaduje klíč TypeSafe AI. Bez něj, nebo když posouzení selže, se použije Claude Sonnet 5.5
-a okno na to upozorní. V patičce okna je u modelu poznámka „auto“.
+a okno na to upozorní. Pod názvem stránky je u modelu poznámka „auto“.
 
 ## Pin do Airtable (volitelné)
 
@@ -67,7 +67,7 @@ Chování:
   a čas doplní rozšíření.
 - Do existující tabulky se jen přidávají nové záznamy; chybějící sloupce se doplní,
   nic se nemaže ani nepřepisuje.
-- Stejná adresa se uloží jen jednou – u už uložené stránky se zobrazí „Už připnuto“.
+- Stejná adresa se uloží jen jednou – u už uložené stránky se nový záznam nepřidá (tlačítko ukáže „Připnuto“).
 - Do Airtable se ukládá celá adresa stránky včetně parametrů, aby odkaz fungoval.
 
 ## Jak to funguje
@@ -99,7 +99,7 @@ a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí čís
 
 Do Developer Dashboardu se nahrává **jen ZIP s obsahem složky `extension`**, ne celý repozitář
 (soubor `manifest.json` musí být v kořeni archivu). Hotový balíček je ve složce `release/`,
-např. `release/shrnuti-stranky-0.4.0.zip`. Nový vytvoříte příkazem:
+např. `release/shrnuti-stranky-0.4.1.zip`. Nový vytvoříte příkazem:
 
 ```bash
 npm run zip      # sestaví kód a vytvoří release/shrnuti-stranky-<verze>.zip

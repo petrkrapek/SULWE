@@ -270,7 +270,7 @@ async function verify({ force = false } = {}) {
 function showPinned(status) {
   pinned = true;
   els.pin.disabled = true;
-  els.pin.textContent = status === "exists" ? "Už připnuto" : "Připnuto ✓";
+  els.pin.textContent = "Připnuto ✓";
   els.pin.title = status === "exists" ? "Tato stránka už v Airtable je." : "Uloženo do Airtable.";
 }
 
