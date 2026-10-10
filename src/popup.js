@@ -1,9 +1,10 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { loadSettings, saveSettings, MODELS, AUTO_MODEL, AUTO_FALLBACK_MODEL } from "./settings.js";
+import { loadSettings, saveSettings, pinConfigured, MODELS, AUTO_MODEL, AUTO_FALLBACK_MODEL } from "./settings.js";
 import { summarizePage, describeError } from "./summarize.js";
 import { renderMarkdown } from "./markdown.js";
 import { factCheckPage, chooseModel, FactCheckError, VERDICTS } from "./factcheck.js";
 import { pinPage, parseTarget, AirtableError } from "./airtable.js";
+import { pinToCraft, CraftError } from "./craft.js";
 
 // Horní mez délky textu stránky (znaky). Běžné stránky jsou mnohem kratší.
 const MAX_CHARS = 400_000;
@@ -129,7 +130,9 @@ async function pickModel(page, settings, signal) {
 
 const cacheKey = (tab) => `summary:${tab.url}`;
 const verdictKey = (tab) => `verdict:${tab.url}`;
-const pinKey = (tab) => `pin:${tab.url}`;
+// Stav Pinu pamatujeme zvlášť pro každý cíl (Airtable / Craft).
+const pinKey = (tab, target) => `pin:${target}:${tab.url}`;
+const PIN_NAMES = { airtable: "Airtable", craft: "Craft" };
 
 async function summarize({ force = false } = {}) {
   controller?.abort();
@@ -272,39 +275,61 @@ async function verify({ force = false } = {}) {
   }
 }
 
-function showPinned(status) {
+function showPinned(status, target) {
   pinned = true;
   els.pin.disabled = true;
   els.pin.textContent = "Připnuto ✓";
-  els.pin.title = status === "exists" ? "Tato stránka už v Airtable je." : "Uloženo do Airtable.";
+  els.pin.title =
+    status === "exists" ? `Tato stránka už v ${PIN_NAMES[target]} je.` : `Uloženo do ${PIN_NAMES[target]}.`;
+}
+
+async function pinToAirtable(settings, tab) {
+  const result = await pinPage({
+    token: settings.airtableToken,
+    target: settings.airtableTarget,
+    tableName: settings.airtableTable,
+    url: tab.url,
+    summary: currentText,
+  });
+  // Pokud se databáze právě založila, zapamatujeme si její ID pro další piny.
+  if (!parseTarget(settings.airtableTarget).baseId) {
+    await saveSettings({ airtableTarget: result.baseId });
+  }
+  return result.status;
 }
 
 async function pin() {
   const settings = await loadSettings();
-  if (!settings.airtableToken || !currentText) return;
+  if (!pinConfigured(settings) || !currentText) return;
+  const target = settings.pinTarget;
 
   els.pin.disabled = true;
   els.pin.textContent = "Ukládám…";
   showError("");
   try {
     const tab = await getActiveTab();
-    const result = await pinPage({
-      token: settings.airtableToken,
-      target: settings.airtableTarget,
-      tableName: settings.airtableTable,
-      url: tab.url,
-      summary: currentText,
-    });
-    // Pokud se databáze právě založila, zapamatujeme si její ID pro další piny.
-    if (!parseTarget(settings.airtableTarget).baseId) {
-      await saveSettings({ airtableTarget: result.baseId });
-    }
-    showPinned(result.status);
-    await chrome.storage.session.set({ [pinKey(tab)]: result.status });
+    const status =
+      target === "craft"
+        ? (
+            await pinToCraft({
+              connectionUrl: settings.craftUrl,
+              apiKey: settings.craftKey,
+              title: tab.title,
+              url: tab.url,
+              summary: currentText,
+            })
+          ).status
+        : await pinToAirtable(settings, tab);
+    showPinned(status, target);
+    await chrome.storage.session.set({ [pinKey(tab, target)]: status });
   } catch (err) {
     els.pin.textContent = "Pin";
     els.pin.disabled = false;
-    showError(err instanceof AirtableError ? err.message : `Uložení do Airtable selhalo: ${err.message}`);
+    showError(
+      err instanceof AirtableError || err instanceof CraftError
+        ? err.message
+        : `Uložení do ${PIN_NAMES[target]} selhalo: ${err.message}`,
+    );
   }
 }
 
@@ -324,11 +349,13 @@ summarize();
 
 // Tlačítko „Ověřit“ je vidět jen s nastaveným klíčem TypeSafe; uložený výsledek se ukáže hned.
 loadSettings().then(async (settings) => {
-  els.pin.hidden = !settings.airtableToken;
-  if (settings.airtableToken) {
+  els.pin.hidden = !pinConfigured(settings);
+  if (pinConfigured(settings)) {
+    els.pin.title = `Uložit odkaz a shrnutí do ${PIN_NAMES[settings.pinTarget]}`;
     const tab = await getActiveTab();
-    const status = (await chrome.storage.session.get(pinKey(tab)))[pinKey(tab)];
-    if (status) showPinned(status);
+    const key = pinKey(tab, settings.pinTarget);
+    const status = (await chrome.storage.session.get(key))[key];
+    if (status) showPinned(status, settings.pinTarget);
   }
   els.verify.hidden = !settings.typesafeKey;
   if (settings.typesafeKey) {

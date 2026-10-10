@@ -48,9 +48,24 @@ a podle ní se vybere model Claude:
 Vyžaduje klíč TypeSafe AI. Bez něj, nebo když posouzení selže, se použije Claude Sonnet 5.5
 a okno na to upozorní. Pod názvem stránky je u modelu poznámka „auto“.
 
-## Pin do Airtable (volitelné)
+## Pin (volitelné)
 
-Tlačítko **Pin** uloží odkaz na stránku a její shrnutí do tabulky v [Airtable](https://airtable.com).
+Tlačítko **Pin** uloží odkaz na stránku a její shrnutí. V nastavení v části **Pin → Kam ukládat**
+zvolíte cíl: **Airtable** (záznam do tabulky), nebo **Craft** (nová poznámka).
+
+### Pin do Craft
+
+1. V aplikaci [Craft](https://www.craft.do) otevřete **Imagine → API** (Connections) a přidejte
+   API připojení s přístupem ke **všem dokumentům** a povoleným zápisem.
+2. Adresu připojení (`https://connect.craft.do/links/…/api/v1`) vložte do nastavení rozšíření.
+   Pokud má připojení zapnutý přístup přes API klíč (`pdk_…`), vyplňte i klíč.
+3. Každý Pin založí nový dokument pojmenovaný podle stránky. Obsahuje odkaz na stránku,
+   shrnutí (každý řádek jako samostatný blok) a datum a čas uložení. Najdete ho mezi
+   nezařazenými dokumenty (Unsorted).
+
+### Pin do Airtable
+
+Uloží odkaz a shrnutí do tabulky v [Airtable](https://airtable.com).
 
 1. Na [airtable.com/create/tokens](https://airtable.com/create/tokens) vytvořte osobní přístupový token
    s oprávněními `data.records:read`, `data.records:write`, `schema.bases:read`, `schema.bases:write`
@@ -78,11 +93,11 @@ Chování:
 - Hotové shrnutí si pamatuje do zavření prohlížeče, takže opakované otevření nic nestojí.
   Tlačítko **Shrnout znovu** vytvoří nové.
 - API klíče jsou uložené jen lokálně v prohlížeči (`chrome.storage.local`) a posílají se pouze
-  na `api.anthropic.com`, `api.typesafe.ai`, resp. `api.airtable.com`.
+  na `api.anthropic.com`, `api.typesafe.ai`, `api.airtable.com`, resp. `connect.craft.do`.
 - Adresa stránky se do API posílá bez parametrů a kotvy (`?…`, `#…`), protože v nich
   mohou být přihlašovací tokeny nebo osobní údaje.
 - Stránky rozšíření mají přísnou Content Security Policy: smějí spouštět jen vlastní skripty
-  a připojovat se jen k těmto třem API.
+  a připojovat se jen k těmto API.
 
 Rozšíření nefunguje na interních stránkách Chromu (`chrome://…`), v Chrome Web Store
 a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí číst obsah.
@@ -99,7 +114,7 @@ a v zabudovaném prohlížeči PDF – Chrome tam rozšířením nedovolí čís
 
 Do Developer Dashboardu se nahrává **jen ZIP s obsahem složky `extension`**, ne celý repozitář
 (soubor `manifest.json` musí být v kořeni archivu). Hotový balíček je ve složce `release/`,
-např. `release/shrnuti-stranky-0.4.2.zip`. Nový vytvoříte příkazem:
+např. `release/shrnuti-stranky-0.5.0.zip`. Nový vytvoříte příkazem:
 
 ```bash
 npm run zip      # sestaví kód a vytvoří release/shrnuti-stranky-<verze>.zip
@@ -132,6 +147,7 @@ src/
   summarize.js      ← volání Claude API a prompt
   factcheck.js      ← ověření fake news přes TypeSafe AI (Jev)
   airtable.js       ← Pin: uložení odkazu a shrnutí do Airtable
+  craft.js          ← Pin: nová poznámka v Craft
   markdown.js       ← bezpečné vykreslení Markdownu
   page.js           ← očištění dat stránky před odesláním (adresa bez parametrů)
   settings.js       ← nastavení a jejich výchozí hodnoty

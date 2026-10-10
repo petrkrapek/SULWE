@@ -1,4 +1,5 @@
-import { loadSettings, saveSettings, MODELS, LANGUAGES, LENGTHS, AUTO_MODEL } from "./settings.js";
+import { loadSettings, saveSettings, MODELS, LANGUAGES, LENGTHS, AUTO_MODEL, PIN_TARGETS } from "./settings.js";
+import { parseConnectionUrl } from "./craft.js";
 import { DEFAULT_TABLE } from "./airtable.js";
 
 const form = document.getElementById("form");
@@ -16,6 +17,7 @@ function fillSelect(select, items) {
 fillSelect(form.model, MODELS);
 fillSelect(form.language, LANGUAGES);
 fillSelect(form.length, LENGTHS);
+fillSelect(form.pinTarget, PIN_TARGETS);
 
 const settings = await loadSettings();
 form.apiKey.value = settings.apiKey;
@@ -29,7 +31,19 @@ form.language.value = settings.language;
 form.length.value = settings.length;
 
 form.typesafeKey.value = settings.typesafeKey;
+form.pinTarget.value = settings.pinTarget;
+form.craftUrl.value = settings.craftUrl;
+form.craftKey.value = settings.craftKey;
 form.airtableToken.value = settings.airtableToken;
+
+// Zobrazíme jen pole pro zvolený cíl Pinu.
+const updatePinTarget = () => {
+  for (const target of PIN_TARGETS) {
+    document.getElementById(`pin-${target.id}`).hidden = form.pinTarget.value !== target.id;
+  }
+};
+form.pinTarget.addEventListener("change", updatePinTarget);
+updatePinTarget();
 form.airtableTarget.value = settings.airtableTarget;
 form.airtableTable.value = settings.airtableTable;
 
@@ -44,7 +58,15 @@ for (const button of document.querySelectorAll(".toggle")) {
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  const craftUrl = form.craftUrl.value.trim();
+  if (craftUrl && !parseConnectionUrl(craftUrl)) {
+    status.textContent = "Adresa připojení Craft musí začínat https://connect.craft.do/";
+    return;
+  }
   await saveSettings({
+    pinTarget: form.pinTarget.value,
+    craftUrl,
+    craftKey: form.craftKey.value.trim(),
     apiKey: form.apiKey.value.trim(),
     model: form.model.value,
     language: form.language.value,

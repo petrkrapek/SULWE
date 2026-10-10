@@ -29,10 +29,23 @@ export const DEFAULTS = {
   language: "cs",
   length: "medium",
   typesafeKey: "",
+  pinTarget: "airtable",
+  craftUrl: "",
+  craftKey: "",
   airtableToken: "",
   airtableTarget: "",
   airtableTable: "Shrnutí stránek",
 };
+
+export const PIN_TARGETS = [
+  { id: "airtable", label: "Airtable – záznam do tabulky" },
+  { id: "craft", label: "Craft – nová poznámka (dokument)" },
+];
+
+/** Je zvolený cíl Pinu nastavený tak, že se dá použít? */
+export function pinConfigured(settings) {
+  return settings.pinTarget === "craft" ? Boolean(settings.craftUrl) : Boolean(settings.airtableToken);
+}
 
 export async function loadSettings() {
   const stored = await chrome.storage.local.get(Object.keys(DEFAULTS));
