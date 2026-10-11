@@ -39,9 +39,6 @@ tlačítka v okně nezobrazují.
 
 Stáhněte repozitář (**Code → Download ZIP**) a v kroku 3 vyberte složku `extension`.
 
-> Zdrojový kód rozšíření je zatím ve větvi `claude/epic-carson-jnqjyj`; hlavní větev `master`
-> obsahuje starší projekt. Před stažením proto přepněte na tuto větev.
-
 ### Aktualizace
 
 Po stažení nové verze v `chrome://extensions` klikněte u rozšíření na ikonu obnovení
@@ -184,6 +181,8 @@ Chování:
 - Stránky rozšíření mají přísnou Content Security Policy: smějí spouštět jen vlastní skripty
   a připojovat se jen k těmto čtyřem API.
 - Doporučujeme nastavit v konzolích jednotlivých služeb měsíční limit útraty.
+
+Podrobnosti o zpracování údajů jsou v [zásadách ochrany osobních údajů](PODMINKY.md).
 
 ## Náklady
 
