@@ -1,0 +1,37 @@
+Shrnutí stránky vám jedním kliknutím shrne článek nebo webovou stránku, kterou máte právě otevřenou. Shrnutí se zobrazí v malém okně a můžete ho rovnou číst, aniž byste opouštěli stránku.
+
+JAK TO FUNGUJE
+• Klikněte na ikonu rozšíření a shrnutí se začne okamžitě vypisovat.
+• Rozšíření přečte jen text aktuální stránky, a to až ve chvíli, kdy na ikonu kliknete.
+• Shrnutí vytváří umělá inteligence Claude od společnosti Anthropic.
+• Hotové shrnutí můžete jedním tlačítkem zkopírovat nebo nechat vytvořit znovu.
+• Shrnutí zůstane uložené do zavření prohlížeče, takže jeho opětovné otevření nic nestojí.
+
+NASTAVENÍ
+• Jazyk shrnutí: čeština, angličtina, nebo jazyk stránky.
+• Délka: krátké (3–5 bodů), střední nebo podrobné.
+• Model: Opus 5.5 (nejkvalitnější), Sonnet 5.5, Haiku 5.5 (nejlevnější), nebo automatická volba podle textu.
+
+AUTOMATICKÁ VOLBA MODELU (VOLITELNÉ)
+S klíčem služby TypeSafe AI rozšíření nejdřív posoudí, jak náročný je text stránky, a podle toho zvolí model: Haiku 5.5 pro běžné zprávy a blogy, Sonnet 5.5 pro odbornější články a návody, Opus 5.5 pro studie a texty z oblasti práva, medicíny nebo techniky. U jednoduchých textů tak ušetříte, náročné texty dostanou nejkvalitnější model.
+
+ODHAD VĚROHODNOSTI (VOLITELNÉ)
+Po zadání klíče služby TypeSafe AI přibude tlačítko „Ověřit“. Model pak odhadne, zda obsah stránky působí věrohodně, jde o názor či satiru, je zavádějící, nebo vykazuje znaky fake news. Ukáže také míru manipulativního jazyka. Jde o automatický odhad, který nenahrazuje ověření faktů člověkem.
+
+ULOŽENÍ DO AIRTABLE NEBO CRAFT (VOLITELNÉ)
+Tlačítko „Pin“ uloží odkaz na stránku spolu se shrnutím:
+• do Airtable jako nový záznam v tabulce (chybějící tabulku nebo sloupce rozšíření samo založí),
+• do Craft jako nový dokument, nebo jako podstránku dnešní denní poznámky.
+Stejnou stránku můžete uložit do obou služeb. Existující záznamy rozšíření nemění ani nemaže.
+
+CO POTŘEBUJETE
+Rozšíření používá váš vlastní API klíč od Anthropic (console.anthropic.com). Za shrnutí tedy platíte přímo poskytovateli podle skutečné spotřeby, bez předplatného a bez prostředníka. Klíč TypeSafe AI (odhad věrohodnosti a automatická volba modelu) a připojení k Airtable nebo Craft jsou volitelné. Bez nich se příslušné funkce v okně nezobrazují.
+
+SOUKROMÍ
+• Žádný vlastní server, žádné sledování, žádná reklama.
+• Text stránky se posílá pouze do Anthropic, případně do TypeSafe AI, a jen po vašem kliknutí.
+• Do Airtable nebo Craft se po kliknutí na „Pin“ ukládá jen odkaz, shrnutí a u Craft také název stránky, nikoli celý text stránky.
+• Do AI služeb se adresa stránky odesílá bez parametrů, které by mohly obsahovat osobní údaje nebo přihlašovací tokeny. Pin ukládá celou adresu, aby uložený odkaz fungoval.
+• API klíče zůstávají uložené jen ve vašem prohlížeči a každý se posílá pouze službě, ke které patří.
+
+Rozšíření nefunguje na interních stránkách Chromu, v Internetovém obchodě Chrome a v zabudovaném prohlížeči PDF.

@@ -205,6 +205,8 @@ automaticky GitHub Actions ([`.github/workflows/release.yml`](.github/workflows/
    sestaví ZIP, vezme poznámky z CHANGELOG.md a založí release se značkou `vX.Y.Z`
    a přiloženým balíčkem. Pokud release pro danou verzi už existuje, nic nedělá.
 4. ZIP z release nahrajte do [Chrome Web Store Developer Dashboardu](https://chrome.google.com/webstore/devconsole).
+   Pokud se změnily funkce, zkopírujte do záložky **Záznam v obchodě** i popis ze souboru
+   [`store/popis.txt`](store/popis.txt).
 
 Do Chrome Web Store se nahrává **jen ZIP s obsahem složky `extension`** (`manifest.json` v kořeni
 archivu), ne celý repozitář. Lokálně ho vytvoříte příkazem `npm run zip`.
@@ -261,6 +263,7 @@ src/
   options.js          ← stránka nastavení
 test/                 ← unit testy (node --test)
 scripts/zip.mjs       ← tvorba balíčku pro Chrome Web Store
+store/popis.txt       ← popis rozšíření pro Chrome Web Store
 .github/workflows/    ← CI (kontrola PR) a automatické vytvoření GitHub Release
 CHANGELOG.md          ← historie změn
 ```
