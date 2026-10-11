@@ -24,8 +24,7 @@ const QUESTIONS = {
     criteria: {
       reliable: "Věrohodný, fakticky podložený obsah bez známek dezinformace.",
       opinion: "Názor, komentář nebo satira – nejde o zpravodajské tvrzení o faktech.",
-      misleading:
-        "Obsahuje zavádějící, přehnaná nebo z kontextu vytržená tvrzení, případně tvrzení bez zdrojů.",
+      misleading: "Obsahuje zavádějící, přehnaná nebo z kontextu vytržená tvrzení, případně tvrzení bez zdrojů.",
       fake: "Smyšlená nebo prokazatelně nepravdivá zpráva, dezinformace či konspirace (fake news).",
     },
   },
@@ -40,8 +39,7 @@ const QUESTIONS = {
 export class FactCheckError extends Error {}
 
 function buildState(page) {
-  const text =
-    page.text.length > MAX_STATE_CHARS ? page.text.slice(0, MAX_STATE_CHARS) : page.text;
+  const text = page.text.length > MAX_STATE_CHARS ? page.text.slice(0, MAX_STATE_CHARS) : page.text;
   return `Název: ${page.title}\nAdresa: ${safeUrl(page.url)}\n\n${text}`;
 }
 

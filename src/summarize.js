@@ -9,10 +9,8 @@ const LANGUAGE_INSTRUCTIONS = {
 
 const LENGTH_INSTRUCTIONS = {
   short: "Shrnutí bude velmi stručné: 3–5 odrážek s tím nejdůležitějším.",
-  medium:
-    "Začni jednou až dvěma větami o tom, o čem stránka je, a pak uveď 5–8 odrážek s hlavními body.",
-  long:
-    "Napiš podrobné shrnutí: krátký úvod, pak hlavní části stránky jako nadpisy (##) s odrážkami a na konec krátký závěr.",
+  medium: "Začni jednou až dvěma větami o tom, o čem stránka je, a pak uveď 5–8 odrážek s hlavními body.",
+  long: "Napiš podrobné shrnutí: krátký úvod, pak hlavní části stránky jako nadpisy (##) s odrážkami a na konec krátký závěr.",
 };
 
 const SYSTEM_PROMPT = `Jsi pomocník, který shrnuje webové stránky pro rychlé přečtení v malém okně prohlížeče.

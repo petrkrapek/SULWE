@@ -53,7 +53,8 @@ async function call(base, apiKey, path, body, signal) {
 
   // Craft vrací chyby jako { error, code } nebo { errors: [{ code, message }] }.
   const first = Array.isArray(data?.errors) ? data.errors[0] : null;
-  const detail = String(first?.message ?? data?.error?.message ?? data?.message ?? data?.error ?? text ?? "").slice(0, 200);
+  const rawDetail = first?.message ?? data?.error?.message ?? data?.message ?? data?.error ?? text ?? "";
+  const detail = String(rawDetail).slice(0, 200);
   if (/in trash/i.test(detail)) {
     throw new CraftError(
       "Cílový dokument je v Craft v koši. U denní poznámky: obnovte dnešní denní poznámku z koše, " +
@@ -79,7 +80,8 @@ const stripCraftTags = (text) =>
   text.replace(/<\/?\s*(page|pagetitle|content|card|callout|caption|highlight|comment)\b[^>]*>/gi, "");
 const mdText = (text) => stripCraftTags(text).replace(/[[\]<>]/g, "");
 // Závorky a mezery v adrese by ukončily odkaz – zakódujeme je (encodeURIComponent závorky nechává).
-const mdUrl = (url) => url.replace(/[()\s<>]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase().padStart(2, "0")}`);
+const mdUrl = (url) =>
+  url.replace(/[()\s<>]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase().padStart(2, "0")}`);
 
 /** Markdown podstránky: název = titulek stránky, obsah = odkaz, shrnutí, čas uložení. */
 export function noteMarkdown({ title, url, summary }) {
