@@ -9,7 +9,22 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 
 ### Přidáno
 - Automatické vytvoření GitHub Release (GitHub Actions): po změně verze v `manifest.json`
-  workflow sestaví ZIP, vezme poznámky z CHANGELOG.md a založí release se značkou `vX.Y.Z`.
+  v `master` workflow spustí testy, sestaví ZIP, vezme poznámky z CHANGELOG.md a založí
+  release se značkou `vX.Y.Z`.
+- Kontrola pull requestů (GitHub Actions): ESLint, Prettier, unit testy a ověření,
+  že `extension/dist/` odpovídá zdrojům.
+- Unit testy pro ošetření dat stránky, vykreslení Markdownu, Pin do Airtable a Craft
+  a nastavení.
+- Dependabot pro npm závislosti a GitHub Actions.
+- Licence Apache 2.0 (`LICENSE`, `NOTICE`).
+
+### Změněno
+- Pin se po minutě bez odpovědi služby přeruší se srozumitelnou hláškou, místo aby
+  tlačítko zůstalo ve stavu „Ukládám…“.
+- Zásady ochrany osobních údajů popisují i automatickou volbu modelu (TypeSafe AI)
+  a Pin do Airtable a Craft.
+- Jediným zdrojem čísla verze je `extension/manifest.json` (`package.json` verzi nemá);
+  požadovaná verze Node.js je v `.nvmrc` a `package.json` (`engines`).
 
 ### Odstraněno
 - Složka `release/` s balíčky ZIP už není součástí repozitáře – hotové balíčky jsou

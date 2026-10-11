@@ -1,7 +1,9 @@
 # Shrnutí stránky – rozšíření do Google Chrome
 
 [![Poslední verze](https://img.shields.io/github/v/release/petrkrapek/SULWE?label=verze)](https://github.com/petrkrapek/SULWE/releases/latest)
+[![CI](https://github.com/petrkrapek/SULWE/actions/workflows/ci.yml/badge.svg)](https://github.com/petrkrapek/SULWE/actions/workflows/ci.yml)
 [![Release](https://github.com/petrkrapek/SULWE/actions/workflows/release.yml/badge.svg)](https://github.com/petrkrapek/SULWE/actions/workflows/release.yml)
+[![Licence](https://img.shields.io/badge/licence-Apache--2.0-blue)](LICENSE)
 ![Chrome](https://img.shields.io/badge/Chrome-Manifest%20V3-4285F4?logo=googlechrome&logoColor=white)
 
 Rozšíření, které jedním kliknutím shrne právě otevřenou webovou stránku pomocí AI
@@ -199,31 +201,45 @@ automaticky GitHub Actions ([`.github/workflows/release.yml`](.github/workflows/
 1. Zvyšte `version` v `extension/manifest.json`.
 2. V [CHANGELOG.md](CHANGELOG.md) přejmenujte oddíl **[Unreleased]** na číslo nové verze s datem
    (a doplňte odkaz na porovnání verzí na konci souboru).
-3. Změny nahrajte (push). Workflow ověří verzi, sestaví ZIP, vezme poznámky z CHANGELOG.md
-   a založí release se značkou `vX.Y.Z` a přiloženým balíčkem. Pokud release pro danou verzi
-   už existuje, nic nedělá.
+3. Změny nahrajte do `master` (sloučením pull requestu). Workflow ověří verzi, spustí testy,
+   sestaví ZIP, vezme poznámky z CHANGELOG.md a založí release se značkou `vX.Y.Z`
+   a přiloženým balíčkem. Pokud release pro danou verzi už existuje, nic nedělá.
 4. ZIP z release nahrajte do [Chrome Web Store Developer Dashboardu](https://chrome.google.com/webstore/devconsole).
 
 Do Chrome Web Store se nahrává **jen ZIP s obsahem složky `extension`** (`manifest.json` v kořeni
 archivu), ne celý repozitář. Lokálně ho vytvoříte příkazem `npm run zip`.
 
-> Release vznikne z jakékoli větve, ve které se změní verze v manifestu. Release lze vyvolat
-> i ručním nahráním značky (`git tag v0.5.3 && git push origin v0.5.3`) – značka musí
-> odpovídat verzi v `manifest.json`.
+> Release vzniká jen z větve `master` – změna verze v pracovní větvi release nezaloží.
+> Release lze vyvolat i ručním nahráním značky (`git tag v0.5.3 && git push origin v0.5.3`)
+> – značka musí odpovídat verzi v `manifest.json` a měla by ukazovat na commit v `master`.
+>
+> Jediným zdrojem čísla verze je `extension/manifest.json`; `package.json` verzi nemá.
 
 ## Vývoj
 
 Zdrojové kódy jsou ve složce `src/`, do `extension/dist/` se sestavují pomocí esbuild
 (sestavené soubory jsou v repozitáři, aby šlo rozšíření načíst bez sestavování).
 
+Potřebujete Node.js 22 nebo novější (verze je v `.nvmrc`).
+
 ```bash
 npm install
 npm run build    # jednorázové sestavení
 npm run watch    # průběžné sestavování při změnách
 npm run zip      # sestavení + balíček do release/ (lokálně, není v gitu)
+
+npm run lint     # ESLint
+npm run format   # Prettier (JavaScript a konfigurace)
+npm test         # unit testy (node --test, složka test/)
+npm run check    # vše výše + sestavení – stejné kontroly jako CI
 ```
 
 Po sestavení v `chrome://extensions` klikněte u rozšíření na ikonu obnovení.
+
+Každý pull request kontroluje GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)):
+lint, formátování, testy a to, že commitnutý `extension/dist/` odpovídá zdrojům v `src/`.
+Pokud kontrola sestavení selže, spusťte `npm run build` a změny v `extension/dist/` commitněte.
+Závislosti a GitHub Actions hlídá Dependabot ([`.github/dependabot.yml`](.github/dependabot.yml)).
 
 ```
 extension/            ← tuto složku načítáte do Chromu
@@ -243,7 +259,13 @@ src/
   page.js             ← očištění dat stránky před odesláním do AI
   settings.js         ← nastavení a jejich výchozí hodnoty
   options.js          ← stránka nastavení
+test/                 ← unit testy (node --test)
 scripts/zip.mjs       ← tvorba balíčku pro Chrome Web Store
-.github/workflows/    ← automatické vytvoření GitHub Release
+.github/workflows/    ← CI (kontrola PR) a automatické vytvoření GitHub Release
 CHANGELOG.md          ← historie změn
 ```
+
+## Licence
+
+Projekt je licencován pod [Apache License 2.0](LICENSE). Copyright 2026 Petr Křápek
+(viz [NOTICE](NOTICE)).
