@@ -1,10 +1,16 @@
 # Shrnutí stránky – rozšíření do Google Chrome
 
+[![Poslední verze](https://img.shields.io/github/v/release/petrkrapek/SULWE?label=verze)](https://github.com/petrkrapek/SULWE/releases/latest)
+[![Release](https://github.com/petrkrapek/SULWE/actions/workflows/release.yml/badge.svg)](https://github.com/petrkrapek/SULWE/actions/workflows/release.yml)
+![Chrome](https://img.shields.io/badge/Chrome-Manifest%20V3-4285F4?logo=googlechrome&logoColor=white)
+
 Rozšíření, které jedním kliknutím shrne právě otevřenou webovou stránku pomocí AI
 a zobrazí shrnutí v malém okně. Volitelně odhadne věrohodnost stránky, samo vybere
 vhodný model podle náročnosti textu a uloží odkaz se shrnutím do Airtable nebo Craft.
 
-**Aktuální verze:** 0.5.3 · historie změn v [CHANGELOG.md](CHANGELOG.md)
+**Aktuální verze:** [0.5.3](https://github.com/petrkrapek/SULWE/releases/tag/v0.5.3) ·
+[stáhnout ZIP](https://github.com/petrkrapek/SULWE/releases/latest) ·
+historie změn v [CHANGELOG.md](CHANGELOG.md)
 
 ## Funkce
 
@@ -23,8 +29,8 @@ tlačítka v okně nezobrazují.
 
 ### Z hotového balíčku (doporučeno)
 
-1. Stáhněte nejnovější ZIP ze stránky [Releases](https://github.com/petrkrapek/SULWE/releases),
-   např. `shrnuti-stranky-0.5.3.zip`, a rozbalte ho do vlastní složky.
+1. Na stránce [nejnovější verze](https://github.com/petrkrapek/SULWE/releases/latest) stáhněte
+   v části **Assets** soubor `shrnuti-stranky-<verze>.zip` a rozbalte ho do vlastní složky.
 2. V Chromu otevřete `chrome://extensions` a vpravo nahoře zapněte **Režim pro vývojáře**.
 3. Klikněte na **Načíst rozbalené** a vyberte rozbalenou složku (tu, ve které je `manifest.json`).
 4. Ikonu rozšíření si připněte na lištu (ikona puzzle → špendlík).
@@ -32,6 +38,9 @@ tlačítka v okně nezobrazují.
 ### Ze zdrojového kódu
 
 Stáhněte repozitář (**Code → Download ZIP**) a v kroku 3 vyberte složku `extension`.
+
+> Zdrojový kód rozšíření je zatím ve větvi `claude/epic-carson-jnqjyj`; hlavní větev `master`
+> obsahuje starší projekt. Před stažením proto přepněte na tuto větev.
 
 ### Aktualizace
 
@@ -183,27 +192,25 @@ nejvíc ovlivňuje model – Haiku 5.5 je výrazně levnější než Opus 5.5. A
 modelu přidá ke každému shrnutí jedno volání TypeSafe AI, u běžných textů ale díky Haiku
 obvykle ušetří.
 
-## Nahrání do Chrome Web Store
+## Vydání nové verze
 
-Do Developer Dashboardu se nahrává **jen ZIP s obsahem složky `extension`**, ne celý repozitář
-(soubor `manifest.json` musí být v kořeni archivu). Hotový balíček stáhnete ze stránky
-[Releases](https://github.com/petrkrapek/SULWE/releases), nebo si ho vytvoříte lokálně:
+Hotové verze jsou na stránce [Releases](https://github.com/petrkrapek/SULWE/releases) a vytváří je
+automaticky GitHub Actions ([`.github/workflows/release.yml`](.github/workflows/release.yml)).
 
-```bash
-npm run zip      # sestaví kód a vytvoří release/shrnuti-stranky-<verze>.zip (není v gitu)
-```
+1. Zvyšte `version` v `extension/manifest.json`.
+2. V [CHANGELOG.md](CHANGELOG.md) přejmenujte oddíl **[Unreleased]** na číslo nové verze s datem
+   (a doplňte odkaz na porovnání verzí na konci souboru).
+3. Změny nahrajte (push). Workflow ověří verzi, sestaví ZIP, vezme poznámky z CHANGELOG.md
+   a založí release se značkou `vX.Y.Z` a přiloženým balíčkem. Pokud release pro danou verzi
+   už existuje, nic nedělá.
+4. ZIP z release nahrajte do [Chrome Web Store Developer Dashboardu](https://chrome.google.com/webstore/devconsole).
 
-Před každým dalším nahráním zvyšte `version` v `extension/manifest.json` a doplňte
-[CHANGELOG.md](CHANGELOG.md).
+Do Chrome Web Store se nahrává **jen ZIP s obsahem složky `extension`** (`manifest.json` v kořeni
+archivu), ne celý repozitář. Lokálně ho vytvoříte příkazem `npm run zip`.
 
-## Vydání nové verze (GitHub Release)
-
-Hotové verze jsou ke stažení na stránce [Releases](https://github.com/petrkrapek/SULWE/releases).
-Release vytváří automaticky GitHub Actions ([`.github/workflows/release.yml`](.github/workflows/release.yml)):
-stačí zvýšit `version` v `extension/manifest.json`, doplnit oddíl do CHANGELOG.md a změny
-nahrát (push). Pokud release pro danou verzi ještě neexistuje, workflow sestaví ZIP, vezme
-poznámky z CHANGELOG.md a založí release i se značkou `vX.Y.Z` a přiloženým balíčkem.
-Release lze vyvolat i ručním nahráním značky (`git tag v0.5.3 && git push origin v0.5.3`).
+> Release vznikne z jakékoli větve, ve které se změní verze v manifestu. Release lze vyvolat
+> i ručním nahráním značky (`git tag v0.5.3 && git push origin v0.5.3`) – značka musí
+> odpovídat verzi v `manifest.json`.
 
 ## Vývoj
 
