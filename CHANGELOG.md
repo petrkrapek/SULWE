@@ -5,6 +5,16 @@ Všechny podstatné změny rozšíření **Shrnutí stránky** jsou zapsané v t
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/)
 a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 
+## [Unreleased]
+
+### Přidáno
+- Automatické vytvoření GitHub Release (GitHub Actions): po změně verze v `manifest.json`
+  workflow sestaví ZIP, vezme poznámky z CHANGELOG.md a založí release se značkou `vX.Y.Z`.
+
+### Odstraněno
+- Složka `release/` s balíčky ZIP už není součástí repozitáře – hotové balíčky jsou
+  na stránce [Releases](https://github.com/petrkrapek/SULWE/releases).
+
 ## [0.5.3] – 2026-10-10
 
 ### Opraveno
@@ -112,6 +122,7 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 - Kopírování shrnutí a jeho opětovné vytvoření.
 - Hotová shrnutí se pamatují do zavření prohlížeče.
 
+[Unreleased]: https://github.com/petrkrapek/SULWE/compare/v0.5.3...claude/epic-carson-jnqjyj
 [0.5.3]: https://github.com/petrkrapek/SULWE/compare/62697f8...b224fd5
 [0.5.2]: https://github.com/petrkrapek/SULWE/compare/f787a91...62697f8
 [0.5.1]: https://github.com/petrkrapek/SULWE/compare/0e1d25d...f787a91

@@ -23,8 +23,8 @@ tlačítka v okně nezobrazují.
 
 ### Z hotového balíčku (doporučeno)
 
-1. Stáhněte nejnovější ZIP ze stránky [Releases](https://github.com/petrkrapek/SULWE/releases)
-   (nebo ze složky [`release/`](release/)), např. `shrnuti-stranky-0.5.3.zip`, a rozbalte ho do vlastní složky.
+1. Stáhněte nejnovější ZIP ze stránky [Releases](https://github.com/petrkrapek/SULWE/releases),
+   např. `shrnuti-stranky-0.5.3.zip`, a rozbalte ho do vlastní složky.
 2. V Chromu otevřete `chrome://extensions` a vpravo nahoře zapněte **Režim pro vývojáře**.
 3. Klikněte na **Načíst rozbalené** a vyberte rozbalenou složku (tu, ve které je `manifest.json`).
 4. Ikonu rozšíření si připněte na lištu (ikona puzzle → špendlík).
@@ -186,11 +186,11 @@ obvykle ušetří.
 ## Nahrání do Chrome Web Store
 
 Do Developer Dashboardu se nahrává **jen ZIP s obsahem složky `extension`**, ne celý repozitář
-(soubor `manifest.json` musí být v kořeni archivu). Hotový balíček je ve složce `release/`.
-Nový vytvoříte příkazem:
+(soubor `manifest.json` musí být v kořeni archivu). Hotový balíček stáhnete ze stránky
+[Releases](https://github.com/petrkrapek/SULWE/releases), nebo si ho vytvoříte lokálně:
 
 ```bash
-npm run zip      # sestaví kód a vytvoří release/shrnuti-stranky-<verze>.zip
+npm run zip      # sestaví kód a vytvoří release/shrnuti-stranky-<verze>.zip (není v gitu)
 ```
 
 Před každým dalším nahráním zvyšte `version` v `extension/manifest.json` a doplňte
@@ -214,7 +214,7 @@ Zdrojové kódy jsou ve složce `src/`, do `extension/dist/` se sestavují pomoc
 npm install
 npm run build    # jednorázové sestavení
 npm run watch    # průběžné sestavování při změnách
-npm run zip      # sestavení + balíček do release/
+npm run zip      # sestavení + balíček do release/ (lokálně, není v gitu)
 ```
 
 Po sestavení v `chrome://extensions` klikněte u rozšíření na ikonu obnovení.
@@ -238,7 +238,6 @@ src/
   settings.js         ← nastavení a jejich výchozí hodnoty
   options.js          ← stránka nastavení
 scripts/zip.mjs       ← tvorba balíčku pro Chrome Web Store
-release/              ← hotové balíčky ZIP
 .github/workflows/    ← automatické vytvoření GitHub Release
 CHANGELOG.md          ← historie změn
 ```
