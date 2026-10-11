@@ -116,7 +116,10 @@ async function ensureTable(token, baseId, tableName, signal) {
 
   // Tabulka existuje – doplníme jen chybějící sloupce, nic nemažeme ani nepřepisujeme.
   const names = new Set(table.fields.map((f) => f.name));
-  for (const def of [{ name: FIELD_URL, type: "url" }, { name: FIELD_SUMMARY, type: "multilineText" }]) {
+  for (const def of [
+    { name: FIELD_URL, type: "url" },
+    { name: FIELD_SUMMARY, type: "multilineText" },
+  ]) {
     if (!names.has(def.name)) {
       table.fields.push(
         await call(token, `/meta/bases/${baseId}/tables/${table.id}/fields`, { method: "POST", body: def, signal }),
