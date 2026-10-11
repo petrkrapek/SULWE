@@ -263,7 +263,7 @@ src/
   options.js          ← stránka nastavení
 test/                 ← unit testy (node --test)
 scripts/zip.mjs       ← tvorba balíčku pro Chrome Web Store
-store/popis.txt       ← popis rozšíření pro Chrome Web Store
+store/                ← texty pro Chrome Web Store (popis, popis jednoho účelu)
 .github/workflows/    ← CI (kontrola PR) a automatické vytvoření GitHub Release
 CHANGELOG.md          ← historie změn
 ```

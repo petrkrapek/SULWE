@@ -1,0 +1,5 @@
+Rozšíření má jediný účel: na žádost uživatele vytvořit pomocí AI shrnutí webové stránky, kterou má právě otevřenou, a zobrazit ho v okně rozšíření.
+
+Všechny ostatní funkce s tímto shrnutím přímo souvisejí a jsou volitelné: odhad věrohodnosti shrnované stránky (TypeSafe AI), automatická volba modelu pro shrnutí podle náročnosti textu (TypeSafe AI) a uložení odkazu na stránku spolu se shrnutím do Airtable nebo Craft (tlačítko Pin).
+
+Rozšíření pracuje vždy jen s aktuální stránkou a jen po kliknutí uživatele. Nesleduje prohlížení, nemění obsah stránek ani nastavení prohlížeče.
