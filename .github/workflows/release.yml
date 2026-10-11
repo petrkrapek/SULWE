@@ -1,13 +1,13 @@
 # Založí GitHub release pro verzi z extension/manifest.json, pokud ještě neexistuje:
 # sestaví balíček pro Chrome Web Store a přidá poznámky z CHANGELOG.md.
-# Spouští se po nahrání značky vX.Y.Z nebo po pushi, který mění verzi v manifestu
-# (značku pak release založí sám).
+# Spouští se po nahrání značky vX.Y.Z nebo po pushi do master, který mění verzi
+# v manifestu (značku pak release založí sám). Pracovní větve release nezakládají.
 name: Release
 
 on:
   push:
     tags: ["v*"]
-    branches: ["**"]
+    branches: [master]
     paths:
       - extension/manifest.json
       - .github/workflows/release.yml
@@ -23,7 +23,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version-file: .nvmrc
           cache: npm
 
       - name: Kontrola verze
@@ -46,6 +46,7 @@ jobs:
         if: steps.version.outputs.skip != 'true'
         run: |
           npm ci
+          npm test
           npm run zip
 
       - name: Poznámky z CHANGELOGu
