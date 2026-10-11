@@ -8,6 +8,8 @@ import { pinToCraft, CraftError } from "./craft.js";
 
 // Horní mez délky textu stránky (znaky). Běžné stránky jsou mnohem kratší.
 const MAX_CHARS = 400_000;
+// Pin, na který služba neodpoví do minuty, přerušíme, aby tlačítko nezůstalo viset.
+const PIN_TIMEOUT_MS = 60_000;
 
 const $ = (id) => document.getElementById(id);
 const els = {
@@ -283,13 +285,14 @@ function showPinned(status, target) {
     status === "exists" ? `Tato stránka už v ${PIN_NAMES[target]} je.` : `Uloženo do ${PIN_NAMES[target]}.`;
 }
 
-async function pinToAirtable(settings, tab) {
+async function pinToAirtable(settings, tab, signal) {
   const result = await pinPage({
     token: settings.airtableToken,
     target: settings.airtableTarget,
     tableName: settings.airtableTable,
     url: tab.url,
     summary: currentText,
+    signal,
   });
   // Pokud se databáze právě založila, zapamatujeme si její ID pro další piny.
   if (!parseTarget(settings.airtableTarget).baseId) {
@@ -302,6 +305,7 @@ async function pin() {
   const settings = await loadSettings();
   if (!pinConfigured(settings) || !currentText) return;
   const target = settings.pinTarget;
+  const signal = AbortSignal.timeout(PIN_TIMEOUT_MS);
 
   els.pin.disabled = true;
   els.pin.textContent = "Ukládám…";
@@ -318,18 +322,21 @@ async function pin() {
               title: tab.title,
               url: tab.url,
               summary: currentText,
+              signal,
             })
           ).status
-        : await pinToAirtable(settings, tab);
+        : await pinToAirtable(settings, tab, signal);
     showPinned(status, target);
     await chrome.storage.session.set({ [pinKey(tab, target)]: status });
   } catch (err) {
     els.pin.textContent = "Pin";
     els.pin.disabled = false;
     showError(
-      err instanceof AirtableError || err instanceof CraftError
-        ? err.message
-        : `Uložení do ${PIN_NAMES[target]} selhalo: ${err.message}`,
+      signal.aborted
+        ? `${PIN_NAMES[target]} neodpověděl včas. Zkuste to prosím znovu.`
+        : err instanceof AirtableError || err instanceof CraftError
+          ? err.message
+          : `Uložení do ${PIN_NAMES[target]} selhalo: ${err.message}`,
     );
   }
 }
