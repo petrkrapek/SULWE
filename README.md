@@ -23,8 +23,8 @@ tlačítka v okně nezobrazují.
 
 ### Z hotového balíčku (doporučeno)
 
-1. Stáhněte nejnovější ZIP ze složky [`release/`](release/), např. `shrnuti-stranky-0.5.3.zip`,
-   a rozbalte ho do vlastní složky.
+1. Stáhněte nejnovější ZIP ze stránky [Releases](https://github.com/petrkrapek/SULWE/releases)
+   (nebo ze složky [`release/`](release/)), např. `shrnuti-stranky-0.5.3.zip`, a rozbalte ho do vlastní složky.
 2. V Chromu otevřete `chrome://extensions` a vpravo nahoře zapněte **Režim pro vývojáře**.
 3. Klikněte na **Načíst rozbalené** a vyberte rozbalenou složku (tu, ve které je `manifest.json`).
 4. Ikonu rozšíření si připněte na lištu (ikona puzzle → špendlík).
@@ -196,6 +196,20 @@ npm run zip      # sestaví kód a vytvoří release/shrnuti-stranky-<verze>.zip
 Před každým dalším nahráním zvyšte `version` v `extension/manifest.json` a doplňte
 [CHANGELOG.md](CHANGELOG.md).
 
+## Vydání nové verze (GitHub Release)
+
+Hotové verze jsou ke stažení na stránce [Releases](https://github.com/petrkrapek/SULWE/releases).
+Release vytváří automaticky GitHub Actions ([`.github/workflows/release.yml`](.github/workflows/release.yml))
+po nahrání značky s číslem verze:
+
+```bash
+git tag v0.5.3
+git push origin v0.5.3
+```
+
+Workflow ověří, že značka odpovídá verzi v `manifest.json`, sestaví ZIP, vezme poznámky
+z příslušného oddílu CHANGELOG.md a release založí i s přiloženým balíčkem.
+
 ## Vývoj
 
 Zdrojové kódy jsou ve složce `src/`, do `extension/dist/` se sestavují pomocí esbuild
@@ -230,5 +244,6 @@ src/
   options.js          ← stránka nastavení
 scripts/zip.mjs       ← tvorba balíčku pro Chrome Web Store
 release/              ← hotové balíčky ZIP
+.github/workflows/    ← automatické vytvoření GitHub Release
 CHANGELOG.md          ← historie změn
 ```

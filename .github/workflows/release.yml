@@ -1,0 +1,59 @@
+# Po nahrání značky vX.Y.Z sestaví balíček pro Chrome Web Store a založí GitHub release
+# s poznámkami z CHANGELOG.md.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Kontrola verze
+        run: |
+          ver="${GITHUB_REF_NAME#v}"
+          manifest=$(node -p "require('./extension/manifest.json').version")
+          if [ "$ver" != "$manifest" ]; then
+            echo "::error::Značka $GITHUB_REF_NAME neodpovídá verzi v manifest.json ($manifest)"
+            exit 1
+          fi
+          echo "VERSION=$ver" >> "$GITHUB_ENV"
+
+      - name: Sestavení balíčku
+        run: |
+          npm ci
+          npm run zip
+
+      - name: Poznámky z CHANGELOGu
+        run: |
+          awk -v ver="$VERSION" '
+            index($0, "## [" ver "]") == 1 { found = 1; next }
+            found && /^## \[/ { exit }
+            found && /^\[[0-9.]+\]: / { exit }
+            found { print }
+          ' CHANGELOG.md > notes.md
+          if [ ! -s notes.md ]; then
+            echo "::error::V CHANGELOG.md chybí oddíl pro verzi $VERSION"
+            exit 1
+          fi
+          printf '\n---\n\n**Instalace:** stáhněte `shrnuti-stranky-%s.zip`, rozbalte ho a v `chrome://extensions` (Režim pro vývojáře) zvolte **Načíst rozbalené**. Do Chrome Web Store se nahrává přímo tento ZIP.\n' "$VERSION" >> notes.md
+
+      - name: Vytvoření release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "release/shrnuti-stranky-$VERSION.zip" \
+            --title "Shrnutí stránky $VERSION" \
+            --notes-file notes.md \
+            --target "$GITHUB_SHA"
