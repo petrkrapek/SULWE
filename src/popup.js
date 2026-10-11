@@ -97,7 +97,7 @@ async function readPage(tab) {
     return result.result;
   } catch {
     throw new Error(
-      "Tuto stránku nelze přečíst. Rozšíření nefunguje na interních stránkách Chromu, v Internetovém obchodě Chrome ani v prohlížeči PDF.",
+      "Tuto stránku nelze přečíst. Rozšíření nefunguje na interních stránkách prohlížeče, v obchodě s rozšířeními ani v prohlížeči PDF.",
     );
   }
 }

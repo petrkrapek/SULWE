@@ -1,7 +1,7 @@
 {
   "name": "shrnuti-stranky",
   "private": true,
-  "description": "Rozšíření do Chromu, které pomocí AI shrne aktuální webovou stránku.",
+  "description": "Rozšíření do Chromu a Safari, které pomocí AI shrne aktuální webovou stránku.",
   "license": "Apache-2.0",
   "author": "Petr Křápek",
   "type": "module",
@@ -12,6 +12,7 @@
     "build": "esbuild src/popup.js src/options.js --bundle --format=esm --target=chrome120 --minify --outdir=extension/dist",
     "watch": "npm run build -- --watch",
     "zip": "npm run build && node scripts/zip.mjs",
+    "safari": "node scripts/safari.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

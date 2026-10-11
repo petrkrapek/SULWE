@@ -31,7 +31,7 @@ Zpracování a uchovávání údajů u těchto poskytovatelů se řídí jejich 
 
 3. Ukládání v prohlížeči
 
-API klíče a uživatelská nastavení jsou uloženy v místním úložišti rozšíření v prohlížeči. Rozšíření pro ně nepoužívá synchronizované úložiště Chrome.
+API klíče a uživatelská nastavení jsou uloženy v místním úložišti rozšíření v prohlížeči. Rozšíření pro ně nepoužívá synchronizované úložiště prohlížeče (Chrome ani iCloud).
 
 Vytvořená shrnutí, výsledky posouzení věrohodnosti a informace o tom, zda už byla stránka uložena Pinem, jsou dočasně ukládány v úložišti relace prohlížeče a přiřazeny k URL příslušné stránky. To umožňuje jejich opětovné zobrazení bez zbytečného opakování API požadavků. Úložiště relace se vymaže při zavření prohlížeče nebo při uložení nastavení.
 

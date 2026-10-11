@@ -1,3 +1,5 @@
 node_modules/
 # Balíčky ZIP se vytvářejí lokálně (npm run zip) nebo v GitHub Release – necommitují se.
 release/
+# Sestavení pro Safari a projekt Xcode (npm run safari) – necommitují se.
+build/

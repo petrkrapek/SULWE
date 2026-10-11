@@ -1,10 +1,11 @@
-# Shrnutí stránky – rozšíření do Google Chrome
+# Shrnutí stránky – rozšíření do Google Chrome a Safari
 
 [![Poslední verze](https://img.shields.io/github/v/release/petrkrapek/SULWE?label=verze)](https://github.com/petrkrapek/SULWE/releases/latest)
 [![CI](https://github.com/petrkrapek/SULWE/actions/workflows/ci.yml/badge.svg)](https://github.com/petrkrapek/SULWE/actions/workflows/ci.yml)
 [![Release](https://github.com/petrkrapek/SULWE/actions/workflows/release.yml/badge.svg)](https://github.com/petrkrapek/SULWE/actions/workflows/release.yml)
 [![Licence](https://img.shields.io/badge/licence-Apache--2.0-blue)](LICENSE)
 ![Chrome](https://img.shields.io/badge/Chrome-Manifest%20V3-4285F4?logo=googlechrome&logoColor=white)
+![Safari](https://img.shields.io/badge/Safari-16.4%2B-006CFF?logo=safari&logoColor=white)
 
 Rozšíření, které jedním kliknutím shrne právě otevřenou webovou stránku pomocí AI
 a zobrazí shrnutí v malém okně. Volitelně odhadne věrohodnost stránky, samo vybere
@@ -45,6 +46,42 @@ Stáhněte repozitář (**Code → Download ZIP**) a v kroku 3 vyberte složku `
 
 Po stažení nové verze v `chrome://extensions` klikněte u rozšíření na ikonu obnovení
 (případně ho znovu načtěte z nové složky). Nastavení i klíče zůstanou zachované.
+
+### Safari (macOS)
+
+Safari instaluje rozšíření jen jako součást aplikace pro macOS, kterou je potřeba sestavit
+v Xcode. Potřebujete Mac se Safari 16.4 nebo novějším, [Xcode](https://apps.apple.com/app/xcode/id497799835)
+a Node.js 22 nebo novější.
+
+1. Stáhněte repozitář a v jeho složce spusťte:
+
+   ```bash
+   npm install
+   npm run safari
+   ```
+
+   Skript sestaví rozšíření pro Safari do `build/safari/extension/` a převodníkem
+   `safari-web-extension-converter` z něj vytvoří projekt
+   `build/safari/Shrnuti stranky/Shrnuti stranky.xcodeproj`.
+2. Projekt otevřete v Xcode. Pokud máte Apple ID přidané v Xcode, zvolte v **Signing & Capabilities**
+   svůj tým u obou cílů (aplikace i rozšíření).
+3. Spusťte aplikaci (**Product → Run**, ⌘R). Otevře se malé okno aplikace – rozšíření je tím
+   v Safari nainstalované.
+4. V Safari otevřete **Nastavení → Rozšíření** a zapněte **Shrnutí stránky**. U položky
+   **Povolit na webech** povolte přístup k API služeb (`api.anthropic.com` a dalším, které používáte),
+   jinak Safari požadavky na ně zablokuje.
+
+Bez podpisu (bez zvoleného týmu) Safari rozšíření načte jen po zapnutí
+**Nastavení → Pokročilé → Zobrazit funkce pro webové vývojáře** a v nabídce
+**Vývojář → Povolit nepodepsaná rozšíření** – tuto volbu Safari po každém spuštění vypne.
+
+- **Aktualizace:** stáhněte novou verzi, znovu spusťte `npm run safari` a aplikaci v Xcode
+  spusťte znovu. Nastavení i klíče zůstanou zachované.
+- **iPhone a iPad:** `npm run safari -- --ios` vytvoří projekt i pro iOS a iPadOS.
+- **Vlastní identifikátor aplikace** (např. pro Mac App Store pod vlastním účtem):
+  `SAFARI_BUNDLE_ID=cz.example.shrnuti npm run safari`.
+- **Distribuce** přes Mac App Store vyžaduje placený Apple Developer Program; aplikaci pak nahrajete
+  z Xcode přes **Product → Archive**.
 
 ## První spuštění
 
@@ -163,7 +200,8 @@ Chování:
 
 | Hláška / situace | Příčina a řešení |
 |---|---|
-| „Tuto stránku nelze přečíst“ | Interní stránky Chromu (`chrome://…`), Chrome Web Store a vestavěný prohlížeč PDF rozšířením číst obsah nedovolí. |
+| „Tuto stránku nelze přečíst“ | Interní stránky Chromu (`chrome://…`), Chrome Web Store a vestavěný prohlížeč PDF rozšířením číst obsah nedovolí. V Safari povolte rozšíření přístup ke stránce (**Nastavení → Rozšíření → Povolit na webech**). |
+| Safari: chyba připojení ke službě | Rozšíření nemá v **Nastavení → Rozšíření → Povolit na webech** povolený přístup k adrese API (`api.anthropic.com` apod.). |
 | „API klíč je neplatný“ / „nejsou kredity“ | Zkontrolujte klíč a kredit na [console.anthropic.com](https://console.anthropic.com). |
 | „Pro automatickou volbu modelu chybí klíč TypeSafe AI“ | Doplňte klíč TypeSafe, nebo zvolte konkrétní model. |
 | Craft: „Cílový dokument je v Craft v koši“ | Dnešní denní poznámka je v koši – obnovte ji, nebo ji z koše trvale smažte. |
@@ -177,7 +215,7 @@ Chování:
   volba modelu), Airtable nebo Craft (Pin). Žádný vlastní server, žádné sledování.
 - Do AI služeb se adresa stránky posílá bez parametrů a kotvy (`?…`, `#…`), protože v nich
   mohou být přihlašovací tokeny nebo osobní údaje.
-- API klíče jsou uložené jen lokálně v prohlížeči (`chrome.storage.local`) a každý se posílá
+- API klíče jsou uložené jen lokálně v prohlížeči (`chrome.storage.local`, v Safari stejně) a každý se posílá
   pouze na adresu své služby: `api.anthropic.com`, `api.typesafe.ai`, `api.airtable.com`,
   `connect.craft.do`.
 - Stránky rozšíření mají přísnou Content Security Policy: smějí spouštět jen vlastní skripty
@@ -227,6 +265,7 @@ npm install
 npm run build    # jednorázové sestavení
 npm run watch    # průběžné sestavování při změnách
 npm run zip      # sestavení + balíček do release/ (lokálně, není v gitu)
+npm run safari   # rozšíření pro Safari + projekt Xcode do build/safari/ (projekt jen na macOS)
 
 npm run lint     # ESLint
 npm run format   # Prettier (JavaScript a konfigurace)
@@ -239,6 +278,8 @@ Po sestavení v `chrome://extensions` klikněte u rozšíření na ikonu obnoven
 Každý pull request kontroluje GitHub Actions ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)):
 lint, formátování, testy a to, že commitnutý `extension/dist/` odpovídá zdrojům v `src/`.
 Pokud kontrola sestavení selže, spusťte `npm run build` a změny v `extension/dist/` commitněte.
+Workflow [`.github/workflows/safari.yml`](.github/workflows/safari.yml) na macOS vytvoří projekt
+pro Xcode, sestaví z něj aplikaci pro Safari (bez podpisu) a projekt přiloží jako artefakt běhu.
 Závislosti a GitHub Actions hlídá Dependabot ([`.github/dependabot.yml`](.github/dependabot.yml)).
 
 ```
@@ -261,7 +302,9 @@ src/
   options.js          ← stránka nastavení
 test/                 ← unit testy (node --test)
 scripts/zip.mjs       ← tvorba balíčku pro Chrome Web Store
-.github/workflows/    ← CI (kontrola PR) a automatické vytvoření GitHub Release
+scripts/safari.mjs    ← sestavení pro Safari a projekt Xcode (safari-manifest.mjs upraví manifest)
+build/safari/         ← výstup npm run safari (není v gitu)
+.github/workflows/    ← CI (kontrola PR), sestavení pro Safari a automatické vytvoření GitHub Release
 CHANGELOG.md          ← historie změn
 ```
 

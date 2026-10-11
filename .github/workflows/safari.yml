@@ -1,0 +1,42 @@
+# Ověří, že z rozšíření jde vytvořit projekt pro Xcode a sestavit aplikaci pro Safari
+# (bez podpisu). Projekt Xcode se přikládá jako artefakt běhu.
+name: Safari
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run safari
+
+      - name: Sestavení aplikace (bez podpisu)
+        run: |
+          xcodebuild \
+            -project "build/safari/Shrnuti stranky/Shrnuti stranky.xcodeproj" \
+            -alltargets \
+            -configuration Release \
+            SYMROOT="$PWD/build/xcode" \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: safari-xcode-projekt
+          path: build/safari/Shrnuti stranky/
+          retention-days: 14

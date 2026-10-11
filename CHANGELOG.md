@@ -8,6 +8,9 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 ## [Unreleased]
 
 ### Přidáno
+- Verze pro Safari (Safari 16.4+ na macOS, volitelně iOS a iPadOS): `npm run safari` sestaví rozšíření
+  pro Safari a na Macu z něj vytvoří projekt pro Xcode. Návod je v README.
+- Kontrola sestavení pro Safari na macOS (GitHub Actions) s projektem Xcode jako artefaktem.
 - Automatické vytvoření GitHub Release (GitHub Actions): po změně verze v `manifest.json`
   v `master` workflow spustí testy, sestaví ZIP, vezme poznámky z CHANGELOG.md a založí
   release se značkou `vX.Y.Z`.
@@ -19,6 +22,7 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 - Licence Apache 2.0 (`LICENSE`, `NOTICE`).
 
 ### Změněno
+- Hláška „Tuto stránku nelze přečíst“ nezmiňuje jen Chrome, platí pro každý prohlížeč.
 - Pin se po minutě bez odpovědi služby přeruší se srozumitelnou hláškou, místo aby
   tlačítko zůstalo ve stavu „Ukládám…“.
 - Zásady ochrany osobních údajů popisují i automatickou volbu modelu (TypeSafe AI)
