@@ -122,7 +122,7 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 - Kopírování shrnutí a jeho opětovné vytvoření.
 - Hotová shrnutí se pamatují do zavření prohlížeče.
 
-[Unreleased]: https://github.com/petrkrapek/SULWE/compare/v0.5.3...claude/epic-carson-jnqjyj
+[Unreleased]: https://github.com/petrkrapek/SULWE/compare/v0.5.3...master
 [0.5.3]: https://github.com/petrkrapek/SULWE/compare/62697f8...b224fd5
 [0.5.2]: https://github.com/petrkrapek/SULWE/compare/f787a91...62697f8
 [0.5.1]: https://github.com/petrkrapek/SULWE/compare/0e1d25d...f787a91
