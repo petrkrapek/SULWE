@@ -199,16 +199,11 @@ Před každým dalším nahráním zvyšte `version` v `extension/manifest.json`
 ## Vydání nové verze (GitHub Release)
 
 Hotové verze jsou ke stažení na stránce [Releases](https://github.com/petrkrapek/SULWE/releases).
-Release vytváří automaticky GitHub Actions ([`.github/workflows/release.yml`](.github/workflows/release.yml))
-po nahrání značky s číslem verze:
-
-```bash
-git tag v0.5.3
-git push origin v0.5.3
-```
-
-Workflow ověří, že značka odpovídá verzi v `manifest.json`, sestaví ZIP, vezme poznámky
-z příslušného oddílu CHANGELOG.md a release založí i s přiloženým balíčkem.
+Release vytváří automaticky GitHub Actions ([`.github/workflows/release.yml`](.github/workflows/release.yml)):
+stačí zvýšit `version` v `extension/manifest.json`, doplnit oddíl do CHANGELOG.md a změny
+nahrát (push). Pokud release pro danou verzi ještě neexistuje, workflow sestaví ZIP, vezme
+poznámky z CHANGELOG.md a založí release i se značkou `vX.Y.Z` a přiloženým balíčkem.
+Release lze vyvolat i ručním nahráním značky (`git tag v0.5.3 && git push origin v0.5.3`).
 
 ## Vývoj
 
