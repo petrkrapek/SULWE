@@ -7,12 +7,14 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 
 ## [Unreleased]
 
+## [0.5.4] – 2026-10-16
+
 ### Přidáno
 - Výběr poskytovatele AI pro shrnutí: kromě Anthropic (Claude) i OpenAI (GPT-6 Astra,
-  GPT-6.1 Sol, GPT-5.6 Terra, GPT-6 Luna). V nastavení funguje stejně jako výběr cíle Pinu – zobrazí se jen
-  klíč a model zvoleného poskytovatele a oba si pamatují své údaje zvlášť. Automatická volba
-  modelu vybírá podle náročnosti textu model zvoleného poskytovatele. Stávající nastavení
-  zůstává u Anthropic.
+  GPT-6.1 Sol, GPT-5.6 Terra, GPT-6 Luna). V nastavení funguje stejně jako výběr cíle
+  Pinu – zobrazí se jen klíč a model zvoleného poskytovatele a oba si pamatují své údaje
+  zvlášť. Automatická volba modelu vybírá podle náročnosti textu model zvoleného
+  poskytovatele. Stávající nastavení zůstává u Anthropic.
 - Automatické vytvoření GitHub Release (GitHub Actions): po změně verze v `manifest.json`
   v `master` workflow spustí testy, sestaví ZIP, vezme poznámky z CHANGELOG.md a založí
   release se značkou `vX.Y.Z`.
@@ -24,10 +26,12 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 - Licence Apache 2.0 (`LICENSE`, `NOTICE`).
 
 ### Změněno
+- Rozšíření nově potřebuje oprávnění pro `api.openai.com` (volá se jen při zvoleném
+  poskytovateli OpenAI); Chrome může po aktualizaci požádat o jeho potvrzení.
 - Pin se po minutě bez odpovědi služby přeruší se srozumitelnou hláškou, místo aby
   tlačítko zůstalo ve stavu „Ukládám…“.
-- Zásady ochrany osobních údajů popisují i automatickou volbu modelu (TypeSafe AI)
-  a Pin do Airtable a Craft.
+- Zásady ochrany osobních údajů popisují i shrnutí přes OpenAI, automatickou volbu
+  modelu (TypeSafe AI) a Pin do Airtable a Craft.
 - Jediným zdrojem čísla verze je `extension/manifest.json` (`package.json` verzi nemá);
   požadovaná verze Node.js je v `.nvmrc` a `package.json` (`engines`).
 
@@ -142,7 +146,8 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 - Kopírování shrnutí a jeho opětovné vytvoření.
 - Hotová shrnutí se pamatují do zavření prohlížeče.
 
-[Unreleased]: https://github.com/petrkrapek/SULWE/compare/v0.5.3...master
+[Unreleased]: https://github.com/petrkrapek/SULWE/compare/v0.5.4...master
+[0.5.4]: https://github.com/petrkrapek/SULWE/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/petrkrapek/SULWE/compare/62697f8...b224fd5
 [0.5.2]: https://github.com/petrkrapek/SULWE/compare/f787a91...62697f8
 [0.5.1]: https://github.com/petrkrapek/SULWE/compare/0e1d25d...f787a91
