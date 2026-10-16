@@ -1,4 +1,14 @@
-import { loadSettings, saveSettings, MODELS, LANGUAGES, LENGTHS, AUTO_MODEL, PIN_TARGETS } from "./settings.js";
+import {
+  loadSettings,
+  saveSettings,
+  MODELS,
+  OPENAI_MODELS,
+  PROVIDERS,
+  LANGUAGES,
+  LENGTHS,
+  AUTO_MODEL,
+  PIN_TARGETS,
+} from "./settings.js";
 import { parseConnectionUrl, CRAFT_MODES } from "./craft.js";
 import { DEFAULT_TABLE } from "./airtable.js";
 
@@ -14,20 +24,37 @@ function fillSelect(select, items) {
   }
 }
 
+fillSelect(form.provider, PROVIDERS);
 fillSelect(form.model, MODELS);
+fillSelect(form.openaiModel, OPENAI_MODELS);
 fillSelect(form.language, LANGUAGES);
 fillSelect(form.length, LENGTHS);
 fillSelect(form.pinTarget, PIN_TARGETS);
 fillSelect(form.craftMode, CRAFT_MODES);
 
 const settings = await loadSettings();
+form.provider.value = settings.provider;
 form.apiKey.value = settings.apiKey;
 form.model.value = settings.model;
+form.openaiKey.value = settings.openaiKey;
+form.openaiModel.value = settings.openaiModel;
 
-const modelHint = document.getElementById("model-hint");
-const updateModelHint = () => (modelHint.hidden = form.model.value !== AUTO_MODEL);
-form.model.addEventListener("change", updateModelHint);
-updateModelHint();
+// Zobrazíme jen pole pro zvoleného poskytovatele AI (stejně jako u cíle Pinu).
+const updateProvider = () => {
+  for (const provider of PROVIDERS) {
+    document.getElementById(`provider-${provider.id}`).hidden = form.provider.value !== provider.id;
+  }
+};
+form.provider.addEventListener("change", updateProvider);
+updateProvider();
+
+// Vysvětlení automatické volby modelu ukážeme jen při jejím výběru.
+for (const select of [form.model, form.openaiModel]) {
+  const hint = document.getElementById(`${select.name}-hint`);
+  const update = () => (hint.hidden = select.value !== AUTO_MODEL);
+  select.addEventListener("change", update);
+  update();
+}
 form.language.value = settings.language;
 form.length.value = settings.length;
 
@@ -74,8 +101,11 @@ form.addEventListener("submit", async (e) => {
     craftUrl,
     craftMode: form.craftMode.value,
     craftKey: form.craftKey.value.trim(),
+    provider: form.provider.value,
     apiKey: form.apiKey.value.trim(),
     model: form.model.value,
+    openaiKey: form.openaiKey.value.trim(),
+    openaiModel: form.openaiModel.value,
     language: form.language.value,
     length: form.length.value,
     typesafeKey: form.typesafeKey.value.trim(),

@@ -8,6 +8,11 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 ## [Unreleased]
 
 ### Přidáno
+- Výběr poskytovatele AI pro shrnutí: kromě Anthropic (Claude) i OpenAI (GPT-6 Astra,
+  GPT-6.1 Sol, GPT-6 Luna). V nastavení funguje stejně jako výběr cíle Pinu – zobrazí se jen
+  klíč a model zvoleného poskytovatele a oba si pamatují své údaje zvlášť. Automatická volba
+  modelu vybírá podle náročnosti textu model zvoleného poskytovatele. Stávající nastavení
+  zůstává u Anthropic.
 - Automatické vytvoření GitHub Release (GitHub Actions): po změně verze v `manifest.json`
   v `master` workflow spustí testy, sestaví ZIP, vezme poznámky z CHANGELOG.md a založí
   release se značkou `vX.Y.Z`.

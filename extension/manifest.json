@@ -27,11 +27,12 @@
   ],
   "host_permissions": [
     "https://api.anthropic.com/*",
+    "https://api.openai.com/*",
     "https://api.typesafe.ai/*",
     "https://api.airtable.com/*",
     "https://connect.craft.do/*"
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; connect-src https://api.anthropic.com https://api.typesafe.ai https://api.airtable.com https://connect.craft.do"
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; connect-src https://api.anthropic.com https://api.openai.com https://api.typesafe.ai https://api.airtable.com https://connect.craft.do"
   }
 }

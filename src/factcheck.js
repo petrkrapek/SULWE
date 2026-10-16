@@ -1,4 +1,5 @@
 import { safeUrl } from "./page.js";
+import { TIER_MODELS } from "./settings.js";
 
 // Posouzení věrohodnosti stránky (fake news) přes TypeSafe AI – model Jev (System One API).
 // Jev nevrací text, ale typované rozhodnutí s pravděpodobnostmi.
@@ -113,12 +114,8 @@ export async function factCheckPage({ page, apiKey, signal }) {
   return { ...verdict, manipulation };
 }
 
-// Automatická volba modelu: Jev určí náročnost textu, podle ní vybereme model Claude.
-const COMPLEXITY_MODELS = {
-  common: "claude-haiku-5-5",
-  expert: "claude-sonnet-5-5",
-  advanced: "claude-opus-5-5",
-};
+// Automatická volba modelu: Jev určí náročnost textu (common / expert / advanced),
+// podle ní vybereme model zvoleného poskytovatele (TIER_MODELS v settings.js).
 
 const COMPLEXITY_QUESTION = {
   complexity: {
@@ -136,10 +133,12 @@ const COMPLEXITY_QUESTION = {
   },
 };
 
-/** Vrátí ID modelu Claude vhodného pro daný text. */
-export async function chooseModel({ page, apiKey, signal }) {
+/** Vrátí ID modelu daného poskytovatele (Anthropic / OpenAI) vhodného pro daný text. */
+export async function chooseModel({ page, apiKey, provider = "anthropic", signal }) {
   const data = await callJev({ apiKey, state: buildState(page), questions: COMPLEXITY_QUESTION, signal });
-  const model = COMPLEXITY_MODELS[choiceOf(findAnswer(data, "complexity"))];
+  const tiers = TIER_MODELS[provider] ?? TIER_MODELS.anthropic;
+  const complexity = choiceOf(findAnswer(data, "complexity"));
+  const model = Object.hasOwn(tiers, complexity ?? "") ? tiers[complexity] : undefined;
   if (!model) {
     throw new FactCheckError("TypeSafe AI vrátila odpověď v neočekávaném formátu.");
   }

@@ -1,5 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { safeUrl, neutralizeTags } from "./page.js";
+import { summarizeWithOpenAI, OpenAIError } from "./openai.js";
+import { providerOf, providerKey } from "./settings.js";
 
 const LANGUAGE_INSTRUCTIONS = {
   cs: "Napiš shrnutí česky.",
@@ -25,18 +27,9 @@ Pravidla:
 - Formátuj jednoduchým Markdownem: odrážky začínající "- ", nadpisy "## " a **tučné** zvýraznění. Nepoužívej tabulky ani odkazy.
 - Neuváděj úvodní fráze typu "Zde je shrnutí" – rovnou začni shrnutím.`;
 
-/**
- * Streamuje shrnutí stránky. `onText` dostává průběžně přibývající text.
- * Vrací kompletní zprávu z API.
- */
-export async function summarizePage({ page, settings, onText, signal }) {
-  const client = new Anthropic({
-    apiKey: settings.apiKey,
-    // Klíč patří uživateli a zůstává v jeho prohlížeči – volání jde přímo z rozšíření.
-    dangerouslyAllowBrowser: true,
-  });
-
-  const userContent = `${LANGUAGE_INSTRUCTIONS[settings.language] ?? LANGUAGE_INSTRUCTIONS.cs}
+/** Uživatelská zpráva se stránkou a pokyny k jazyku a délce (stejná pro všechny poskytovatele). */
+export function buildUserContent(page, settings) {
+  return `${LANGUAGE_INSTRUCTIONS[settings.language] ?? LANGUAGE_INSTRUCTIONS.cs}
 ${LENGTH_INSTRUCTIONS[settings.length] ?? LENGTH_INSTRUCTIONS.medium}
 
 <page>
@@ -46,11 +39,38 @@ ${LENGTH_INSTRUCTIONS[settings.length] ?? LENGTH_INSTRUCTIONS.medium}
 ${neutralizeTags(page.text)}
 </content>
 </page>`;
+}
+
+/**
+ * Streamuje shrnutí stránky u zvoleného poskytovatele (`settings.provider`) a modelem `settings.model`.
+ * `onText` dostává průběžně přibývající text. Vrací `{ model, stop_reason, … }`.
+ */
+export async function summarizePage({ page, settings, onText, signal }) {
+  const userContent = buildUserContent(page, settings);
+  const effort = settings.length === "long" ? "medium" : "low";
+
+  if (providerOf(settings) === "openai") {
+    return await summarizeWithOpenAI({
+      apiKey: providerKey(settings),
+      model: settings.model,
+      instructions: SYSTEM_PROMPT,
+      input: userContent,
+      effort,
+      onText,
+      signal,
+    });
+  }
+
+  const client = new Anthropic({
+    apiKey: settings.apiKey,
+    // Klíč patří uživateli a zůstává v jeho prohlížeči – volání jde přímo z rozšíření.
+    dangerouslyAllowBrowser: true,
+  });
 
   const request = {
     model: settings.model,
     max_tokens: 64000,
-    output_config: { effort: settings.length === "long" ? "medium" : "low" },
+    output_config: { effort },
     system: SYSTEM_PROMPT,
     messages: [{ role: "user", content: userContent }],
   };
@@ -69,6 +89,7 @@ ${neutralizeTags(page.text)}
 
 /** Převede chybu z API na srozumitelnou českou hlášku. */
 export function describeError(err) {
+  if (err instanceof OpenAIError) return err.message;
   if (err instanceof Anthropic.AuthenticationError) {
     return "API klíč je neplatný. Zkontrolujte ho v nastavení rozšíření.";
   }
