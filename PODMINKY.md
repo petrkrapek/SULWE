@@ -2,7 +2,7 @@ Zásady ochrany osobních údajů – Shrnu.to
 
 Poslední aktualizace: 16. října 2026
 
-Tyto zásady popisují zpracování údajů při používání rozšíření Shrnu.to – shrnutí stránky (dále „Shrnu.to“). Rozšíření vytváří shrnutí aktuální webové stránky pomocí služby Anthropic, nebo OpenAI – podle poskytovatele zvoleného v nastavení. Volitelně umožňuje posoudit věrohodnost obsahu stránky a automaticky zvolit model pomocí TypeSafe AI a uložit odkaz se shrnutím do služby Airtable, Craft nebo Notion.
+Tyto zásady popisují zpracování údajů při používání rozšíření Shrnu.to – shrnutí stránky (dále „Shrnu.to“). Rozšíření vytváří shrnutí aktuální webové stránky pomocí služby Anthropic, OpenAI, nebo Mistral AI – podle poskytovatele zvoleného v nastavení. Volitelně umožňuje posoudit věrohodnost obsahu stránky a automaticky zvolit model pomocí TypeSafe AI a uložit odkaz se shrnutím do služby Airtable, Craft nebo Notion.
 
 1. Jaké údaje rozšíření zpracovává
 
@@ -10,11 +10,11 @@ Po aktivaci rozšíření uživatelem načte název, URL a viditelný text aktu�
 
 Obsah stránky může zahrnovat osobní či důvěrné údaje, pokud jsou na ní zobrazeny. Rozšíření proto používejte pouze na stránkách, jejichž obsah můžete předat příslušným službám.
 
-Rozšíření dále zpracovává API klíče a přístupové údaje zadané uživatelem (Anthropic, OpenAI, TypeSafe AI, Airtable, Craft, Notion) a nastavení poskytovatele AI, modelu, jazyka, délky shrnutí a cíle Pinu.
+Rozšíření dále zpracovává API klíče a přístupové údaje zadané uživatelem (Anthropic, OpenAI, Mistral AI, TypeSafe AI, Airtable, Craft, Notion) a nastavení poskytovatele AI, modelu, jazyka, délky shrnutí a cíle Pinu.
 
 2. Předávání údajů externím službám
 
-Pro vytvoření shrnutí se text, název a URL stránky odesílají pouze zvolenému poskytovateli AI: službě Anthropic prostřednictvím api.anthropic.com, nebo službě OpenAI prostřednictvím api.openai.com. URL se odesílá bez parametrů a kotvy (části za znaky „?“ a „#“). Požadavek obsahuje také vybrané nastavení shrnutí a API klíč zvoleného poskytovatele potřebný k jeho autorizaci. Požadavky na OpenAI se odesílají s volbou, aby je služba neukládala pro pozdější zobrazení (store: false); jejich případné uchovávání na straně OpenAI se řídí jejími podmínkami.
+Pro vytvoření shrnutí se text, název a URL stránky odesílají pouze zvolenému poskytovateli AI: službě Anthropic prostřednictvím api.anthropic.com, službě OpenAI prostřednictvím api.openai.com, nebo službě Mistral AI prostřednictvím api.mistral.ai. URL se odesílá bez parametrů a kotvy (části za znaky „?“ a „#“). Požadavek obsahuje také vybrané nastavení shrnutí a API klíč zvoleného poskytovatele potřebný k jeho autorizaci. Požadavky na OpenAI se odesílají s volbou, aby je služba neukládala pro pozdější zobrazení (store: false); jejich případné uchovávání na straně OpenAI se řídí jejími podmínkami. Uchovávání požadavků na straně Mistral AI se řídí podmínkami Mistral AI.
 
 Pokud uživatel zadá API klíč TypeSafe AI, odesílají se název stránky, URL bez parametrů a kotvy a začátek textu stránky (nejvýše 20 000 znaků) také službě TypeSafe AI prostřednictvím api.typesafe.ai, a to:
 - po kliknutí na tlačítko Ověřit – za účelem posouzení věrohodnosti obsahu;

@@ -6,8 +6,16 @@ export const AUTO_MODEL = "auto";
 export const PROVIDERS = [
   { id: "anthropic", label: "Anthropic – modely Claude" },
   { id: "openai", label: "OpenAI – modely GPT" },
+  { id: "mistral", label: "Mistral – evropské modely" },
 ];
-export const PROVIDER_NAMES = { anthropic: "Anthropic", openai: "OpenAI" };
+export const PROVIDER_NAMES = { anthropic: "Anthropic", openai: "OpenAI", mistral: "Mistral" };
+
+// Pole nastavení s klíčem a modelem každého poskytovatele (Anthropic používá původní názvy).
+const PROVIDER_FIELDS = {
+  anthropic: { key: "apiKey", model: "model" },
+  openai: { key: "openaiKey", model: "openaiModel" },
+  mistral: { key: "mistralKey", model: "mistralModel" },
+};
 
 export const MODELS = [
   { id: AUTO_MODEL, label: "Automaticky podle textu (vybírá TypeSafe AI)" },
@@ -24,27 +32,36 @@ export const OPENAI_MODELS = [
   { id: "gpt-6-luna", label: "GPT-6 Luna (nejrychlejší, nejlevnější)" },
 ];
 
-export const PROVIDER_MODELS = { anthropic: MODELS, openai: OPENAI_MODELS };
+// Aliasy „-latest“ vždy míří na aktuální verzi modelu (např. Mistral Large 3 → Large 4).
+export const MISTRAL_MODELS = [
+  { id: AUTO_MODEL, label: "Automaticky podle textu (vybírá TypeSafe AI)" },
+  { id: "mistral-large-latest", label: "Mistral Large (největší model)" },
+  { id: "mistral-medium-latest", label: "Mistral Medium (vyvážený výkon a cena)" },
+  { id: "mistral-small-latest", label: "Mistral Small (nejrychlejší, nejlevnější)" },
+];
+
+export const PROVIDER_MODELS = { anthropic: MODELS, openai: OPENAI_MODELS, mistral: MISTRAL_MODELS };
 
 // Automatická volba modelu: podle náročnosti textu (viz factcheck.js) se vybere model zvoleného poskytovatele.
 export const TIER_MODELS = {
   anthropic: { common: "claude-haiku-5-5", expert: "claude-sonnet-5-5", advanced: "claude-opus-5-5" },
   openai: { common: "gpt-6-luna", expert: "gpt-6.1-sol", advanced: "gpt-6-astra" },
+  mistral: { common: "mistral-small-latest", expert: "mistral-medium-latest", advanced: "mistral-large-latest" },
 };
 
 /** Zvolený poskytovatel (neznámá hodnota → Anthropic). */
 export function providerOf(settings) {
-  return settings.provider === "openai" ? "openai" : "anthropic";
+  return Object.hasOwn(PROVIDER_FIELDS, settings.provider ?? "") ? settings.provider : "anthropic";
 }
 
 /** API klíč zvoleného poskytovatele. */
 export function providerKey(settings) {
-  return providerOf(settings) === "openai" ? settings.openaiKey : settings.apiKey;
+  return settings[PROVIDER_FIELDS[providerOf(settings)].key];
 }
 
 /** Model zvolený v nastavení pro aktuálního poskytovatele (může být AUTO_MODEL). */
 export function selectedModel(settings) {
-  return providerOf(settings) === "openai" ? settings.openaiModel : settings.model;
+  return settings[PROVIDER_FIELDS[providerOf(settings)].model];
 }
 
 /** Záložní (střední) model zvoleného poskytovatele, když automatická volba selže (chybí klíč TypeSafe, chyba API). */
@@ -52,9 +69,9 @@ export function fallbackModel(settings) {
   return TIER_MODELS[providerOf(settings)].expert;
 }
 
-/** Název modelu bez předpony a popisu, např. „Haiku 5.5“ nebo „GPT-6 Luna“. */
+/** Název modelu bez předpony a popisu, např. „Haiku 5.5“, „GPT-6 Luna“ nebo „Mistral Large“. */
 export function modelLabel(id) {
-  const known = [...MODELS, ...OPENAI_MODELS].find((m) => m.id === id && m.id !== AUTO_MODEL);
+  const known = [...MODELS, ...OPENAI_MODELS, ...MISTRAL_MODELS].find((m) => m.id === id && m.id !== AUTO_MODEL);
   if (known) return known.label.replace(/\s*\(.*\)$/, "");
   // Neznámé ID (třeba záložní model po odmítnutí nebo snapshot) převedeme podle tvaru.
   const claude = /^claude-([a-z]+)-(\d+)(?:-(\d+))?/.exec(id ?? "");
@@ -66,6 +83,14 @@ export function modelLabel(id) {
   if (gpt) {
     const [, version, name] = gpt;
     return `GPT-${version}${name ? ` ${name[0].toUpperCase()}${name.slice(1)}` : ""}`;
+  }
+  // Mistral vrací konkrétní verzi, např. „mistral-large-2512“ → „Mistral Large“.
+  // Velikost s čísly (např. „ministral-8b-2512“) píšeme velkými písmeny: „Ministral 8B“.
+  const mistral = /^(mistral|ministral|magistral)-([a-z0-9]+)/.exec(id ?? "");
+  if (mistral) {
+    const [, family, size] = mistral;
+    const cap = (s) => `${s[0].toUpperCase()}${s.slice(1)}`;
+    return `${cap(family)} ${/\d/.test(size) ? size.toUpperCase() : cap(size)}`;
   }
   return id;
 }
@@ -88,6 +113,8 @@ export const DEFAULTS = {
   model: "claude-opus-5-5",
   openaiKey: "",
   openaiModel: "gpt-6-astra",
+  mistralKey: "",
+  mistralModel: "mistral-large-latest",
   language: "cs",
   length: "medium",
   typesafeKey: "",

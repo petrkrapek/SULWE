@@ -1,6 +1,8 @@
 // Shrnutí přes OpenAI – Responses API se streamováním (Server-Sent Events).
 // Voláme ho přímo přes fetch, aby rozšíření nepotřebovalo další knihovnu.
 
+import { readEvents } from "./sse.js";
+
 export const OPENAI_ENDPOINT = "https://api.openai.com/v1/responses";
 
 export class OpenAIError extends Error {}
@@ -23,33 +25,6 @@ export function describeOpenAIError(status, body) {
     return "Stránka je na shrnutí příliš dlouhá.";
   }
   return `Požadavek byl odmítnut: ${msg || `chyba ${status}`}`;
-}
-
-// Rozdělí proud SSE na jednotlivé události (JSON z řádků „data: …“).
-async function* readEvents(body) {
-  const reader = body.getReader();
-  const decoder = new TextDecoder();
-  let buffer = "";
-  for (;;) {
-    const { value, done } = await reader.read();
-    buffer += decoder.decode(value, { stream: !done });
-    const chunks = buffer.split(/\r?\n\r?\n/);
-    buffer = done ? "" : chunks.pop();
-    for (const chunk of chunks) {
-      const data = chunk
-        .split(/\r?\n/)
-        .filter((line) => line.startsWith("data:"))
-        .map((line) => line.slice(5).trimStart())
-        .join("\n");
-      if (!data || data === "[DONE]") continue;
-      try {
-        yield JSON.parse(data);
-      } catch {
-        // Neúplná nebo neznámá událost – přeskočíme.
-      }
-    }
-    if (done) return;
-  }
 }
 
 /**

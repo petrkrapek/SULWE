@@ -33,12 +33,13 @@
   "host_permissions": [
     "https://api.anthropic.com/*",
     "https://api.openai.com/*",
+    "https://api.mistral.ai/*",
     "https://api.typesafe.ai/*",
     "https://api.airtable.com/*",
     "https://connect.craft.do/*",
     "https://api.notion.com/*"
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; connect-src https://api.anthropic.com https://api.openai.com https://api.typesafe.ai https://api.airtable.com https://connect.craft.do https://api.notion.com"
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; connect-src https://api.anthropic.com https://api.openai.com https://api.mistral.ai https://api.typesafe.ai https://api.airtable.com https://connect.craft.do https://api.notion.com"
   }
 }

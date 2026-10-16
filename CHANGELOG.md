@@ -7,6 +7,17 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 
 ## [Unreleased]
 
+### Přidáno
+- Třetí poskytovatel AI pro shrnutí: **Mistral** (evropské modely Mistral Large, Medium
+  a Small). V nastavení přibyla volba Mistral s vlastním API klíčem a modelem; volají se
+  aliasy `-latest`, takže se vždy použije aktuální verze modelu. Automatická volba modelu
+  vybírá podle náročnosti textu Mistral Small, Medium, nebo Large.
+
+### Změněno
+- Rozšíření nově potřebuje oprávnění pro `api.mistral.ai` (volá se jen při zvoleném
+  poskytovateli Mistral); Chrome může po aktualizaci požádat o jeho potvrzení.
+- Zásady ochrany osobních údajů a uvítací návod uvádějí i Mistral.
+
 ## [0.5.5] – 2026-10-16
 
 ### Přidáno

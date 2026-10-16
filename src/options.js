@@ -5,6 +5,7 @@ import {
   providerKey,
   MODELS,
   OPENAI_MODELS,
+  MISTRAL_MODELS,
   PROVIDERS,
   PROVIDER_NAMES,
   LANGUAGES,
@@ -53,6 +54,7 @@ fillChoices($("provider-choices"), "provider", PROVIDERS);
 fillChoices($("pinTarget-choices"), "pinTarget", PIN_TARGETS);
 fillSelect(form.model, MODELS);
 fillSelect(form.openaiModel, OPENAI_MODELS);
+fillSelect(form.mistralModel, MISTRAL_MODELS);
 fillSelect(form.language, LANGUAGES);
 fillSelect(form.length, LENGTHS);
 fillSelect(form.craftMode, CRAFT_MODES);
@@ -67,6 +69,8 @@ const FIELDS = [
   "model",
   "openaiKey",
   "openaiModel",
+  "mistralKey",
+  "mistralModel",
   "language",
   "length",
   "typesafeKey",
@@ -97,7 +101,8 @@ function refresh() {
   const values = collect();
   for (const provider of PROVIDERS) $(`provider-${provider.id}`).hidden = values.provider !== provider.id;
   for (const target of PIN_TARGETS) $(`pin-${target.id}`).hidden = values.pinTarget !== target.id;
-  for (const select of [form.model, form.openaiModel]) $(`${select.name}-hint`).hidden = select.value !== AUTO_MODEL;
+  for (const select of [form.model, form.openaiModel, form.mistralModel])
+    $(`${select.name}-hint`).hidden = select.value !== AUTO_MODEL;
 
   const providerName = PROVIDER_NAMES[values.provider] ?? PROVIDER_NAMES.anthropic;
   if (providerKey(values)) setBadge("badge-summary", "ok", `Připraveno · ${providerName}`);

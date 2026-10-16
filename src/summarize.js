@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { safeUrl, neutralizeTags } from "./page.js";
 import { summarizeWithOpenAI, OpenAIError } from "./openai.js";
+import { summarizeWithMistral, MistralError } from "./mistral.js";
 import { providerOf, providerKey } from "./settings.js";
 
 const LANGUAGE_INSTRUCTIONS = {
@@ -49,6 +50,17 @@ export async function summarizePage({ page, settings, onText, signal }) {
   const userContent = buildUserContent(page, settings);
   const effort = settings.length === "long" ? "medium" : "low";
 
+  if (providerOf(settings) === "mistral") {
+    return await summarizeWithMistral({
+      apiKey: providerKey(settings),
+      model: settings.model,
+      instructions: SYSTEM_PROMPT,
+      input: userContent,
+      onText,
+      signal,
+    });
+  }
+
   if (providerOf(settings) === "openai") {
     return await summarizeWithOpenAI({
       apiKey: providerKey(settings),
@@ -89,7 +101,7 @@ export async function summarizePage({ page, settings, onText, signal }) {
 
 /** Převede chybu z API na srozumitelnou českou hlášku. */
 export function describeError(err) {
-  if (err instanceof OpenAIError) return err.message;
+  if (err instanceof OpenAIError || err instanceof MistralError) return err.message;
   if (err instanceof Anthropic.AuthenticationError) {
     return "API klíč je neplatný. Zkontrolujte ho v nastavení rozšíření.";
   }
