@@ -10,6 +10,10 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 ## [0.5.5] – 2026-10-16
 
 ### Přidáno
+- Uvítací stránka s návodem, která se otevře hned po instalaci rozšíření: tři kroky
+  do začátku (připnutí ikony, API klíč, první shrnutí), které se podle nastavení samy
+  odškrtávají, ukázka okna rozšíření, přehled volitelných funkcí se stavem, soukromí
+  a řešení potíží. Kdykoli ji znovu otevřete odkazem **Návod** v záhlaví nastavení.
 - Pin do Notion: odkaz a shrnutí se uloží jako podstránka zvolené stránky, nebo jako záznam
   ve zvolené databázi (název, sloupec URL, shrnutí v obsahu záznamu). Do databáze se stejná
   adresa neuloží dvakrát a chybějící sloupec URL se doplní. Stačí token interní integrace

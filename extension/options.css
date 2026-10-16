@@ -33,6 +33,16 @@ body {
   margin-bottom: 24px;
 }
 .page-header img { border-radius: 10px; }
+.header-link {
+  margin-left: auto;
+  font-weight: 600;
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 12px;
+  background: var(--card);
+}
+.header-link:hover { border-color: var(--accent); }
 h1 { font-size: 22px; line-height: 1.2; margin: 0; }
 .subtitle { margin: 2px 0 0; color: var(--muted); }
 #version:not(:empty)::before { content: " · verze "; }

@@ -59,6 +59,9 @@ Po stažení nové verze v `chrome://extensions` klikněte u rozšíření na ik
 
 Pak stačí na libovolné stránce kliknout na ikonu – shrnutí se začne vypisovat okamžitě.
 
+Po instalaci se rozšíření samo otevře **uvítací stránku s návodem** – provede vás těmito kroky
+a hotové sama odškrtne. Znovu ji otevřete odkazem **Návod** v záhlaví nastavení.
+
 ## Okno rozšíření
 
 ```
@@ -290,6 +293,7 @@ extension/            ← tuto složku načítáte do Chromu
   manifest.json
   popup.html/.css     ← okno se shrnutím
   options.html/.css   ← nastavení
+  welcome.html/.css   ← uvítací stránka s návodem (otevře se po instalaci)
   style.css           ← sdílené barvy a styly (světlý i tmavý režim)
   dist/               ← sestavený JavaScript
   icons/
@@ -305,6 +309,8 @@ src/
   page.js             ← očištění dat stránky před odesláním do AI
   settings.js         ← nastavení a jejich výchozí hodnoty
   options.js          ← stránka nastavení
+  welcome.js          ← uvítací stránka (odškrtávání hotových kroků)
+  background.js       ← service worker: po instalaci otevře uvítací stránku
 test/                 ← unit testy (node --test)
 scripts/zip.mjs       ← tvorba balíčku pro Chrome Web Store
 .github/workflows/    ← CI (kontrola PR) a automatické vytvoření GitHub Release

@@ -1,0 +1,127 @@
+/* Uvítací stránka s návodem – doplňuje options.css (stejné karty, štítky a barvy). */
+h3 { font-size: 14px; margin: 0; }
+.card > p, .feature p, .step p { margin: 4px 0 0; }
+.card > .open-options { margin-top: 16px; }
+.open-options { border-radius: 8px; min-height: 34px; padding: 4px 14px; }
+.step .open-options { margin-top: 10px; }
+.kbd {
+  display: inline-block;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0 4px;
+  background: var(--surface);
+  line-height: 1.4;
+}
+
+/* Kroky „Začněte“ */
+.steps { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 12px; }
+.step {
+  display: grid;
+  grid-template-columns: 32px 1fr;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.step-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.step.done { border-color: var(--ok); }
+.step.done .step-num { background: var(--ok-soft); color: var(--ok); font-size: 0; }
+.step.done .step-num::after { content: "✓"; font-size: 16px; }
+.step.done h3::after { content: " – hotovo"; color: var(--ok); font-weight: 600; }
+
+/* Ukázka okna rozšíření */
+.mock {
+  max-width: 380px;
+  margin: 16px auto 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.08);
+  font-size: 13px;
+}
+.mock-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.mock-title { font-weight: 600; }
+.mock-meta { color: var(--muted); font-size: 12px; }
+.mock-gear { color: var(--muted); }
+.mock-verdict {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.mock-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+.mock-body { padding: 8px 12px; }
+.mock-body p { margin: 0 0 4px; }
+.mock-body ul { margin: 0; padding-left: 18px; }
+.mock-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 8px 12px;
+  border-top: 1px solid var(--border);
+}
+.mock-foot span {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 2px 8px;
+  background: var(--surface);
+}
+.mock-foot .mock-primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+
+.legend { margin: 16px 0 0; display: grid; gap: 6px; font-size: 13px; }
+.legend div { display: grid; grid-template-columns: 140px 1fr; gap: 12px; }
+.legend dt { font-weight: 600; }
+.legend dd { margin: 0; color: var(--muted); }
+
+/* Volitelné funkce */
+.features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+.feature {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 13px;
+}
+.feature-head { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; }
+
+.checks { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.checks li { position: relative; padding-left: 26px; }
+.checks li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 1px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--ok-soft);
+  color: var(--ok);
+}
+.howto + .howto { margin-top: 8px; }
+.howto p { margin: 6px 0 2px; }
+
+@media (max-width: 620px) {
+  .features { grid-template-columns: 1fr; }
+  .legend div { grid-template-columns: 1fr; gap: 0; }
+}

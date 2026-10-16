@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shrnutí stránky – vítejte</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="options.css">
+  <link rel="stylesheet" href="welcome.css">
+</head>
+<body>
+  <header class="page-header">
+    <img src="icons/icon48.png" alt="" width="40" height="40">
+    <div>
+      <h1>Vítejte v rozšíření Shrnutí stránky</h1>
+      <p class="subtitle">Jedním kliknutím shrne otevřenou stránku pomocí AI<span id="version"></span></p>
+    </div>
+  </header>
+
+  <!-- Začínáme -->
+  <section class="card" aria-labelledby="sec-start">
+    <div class="card-head">
+      <div>
+        <h2 id="sec-start">Začněte ve třech krocích</h2>
+        <p class="card-desc">Zabere to asi dvě minuty. Hotové kroky se samy odškrtnou.</p>
+      </div>
+      <span class="badge" id="badge-start"></span>
+    </div>
+
+    <ol class="steps">
+      <li class="step" id="step-pin">
+        <span class="step-num" aria-hidden="true">1</span>
+        <div>
+          <h3>Připněte si ikonu na lištu</h3>
+          <p>
+            Vpravo nahoře klikněte na ikonu dílku skládačky <span class="kbd">🧩</span> a u položky
+            <strong>Shrnutí stránky</strong> na špendlík. Ikona pak bude vždy po ruce.
+          </p>
+        </div>
+      </li>
+      <li class="step" id="step-key">
+        <span class="step-num" aria-hidden="true">2</span>
+        <div>
+          <h3>Vložte API klíč poskytovatele AI</h3>
+          <p>
+            V nastavení zvolte <strong>Anthropic</strong> (modely Claude), nebo <strong>OpenAI</strong> (modely GPT)
+            a vložte klíč z <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener">console.anthropic.com</a>,
+            resp. <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener">platform.openai.com</a>.
+            Účet musí mít kredit.
+          </p>
+          <button type="button" class="primary open-options">Otevřít nastavení</button>
+        </div>
+      </li>
+      <li class="step" id="step-use">
+        <span class="step-num" aria-hidden="true">3</span>
+        <div>
+          <h3>Na libovolné stránce klikněte na ikonu</h3>
+          <p>Shrnutí se začne hned vypisovat v malém okně. Hotové shrnutí se pamatuje do zavření prohlížeče.</p>
+        </div>
+      </li>
+    </ol>
+  </section>
+
+  <!-- Okno rozšíření -->
+  <section class="card" aria-labelledby="sec-popup">
+    <div class="card-head">
+      <div>
+        <h2 id="sec-popup">Co uvidíte v okně</h2>
+        <p class="card-desc">Okno se otevře po kliknutí na ikonu rozšíření.</p>
+      </div>
+    </div>
+    <div class="mock" aria-hidden="true">
+      <div class="mock-head">
+        <div>
+          <div class="mock-title">Název stránky</div>
+          <div class="mock-meta">Sonnet 5.5 · auto · uloženo</div>
+        </div>
+        <span class="mock-gear">⚙</span>
+      </div>
+      <div class="mock-verdict"><span class="mock-dot"></span>Věrohodné · 87 % · manipulace žádná</div>
+      <div class="mock-body">
+        <p>Krátký úvod o tom, o čem stránka je.</p>
+        <ul><li><strong>Hlavní bod</strong> shrnutí</li><li>Další důležitá informace</li></ul>
+      </div>
+      <div class="mock-foot">
+        <span>Ověřit</span><span>Kopírovat</span><span>Znovu</span><span class="mock-primary">Pin</span>
+      </div>
+    </div>
+    <dl class="legend">
+      <div><dt>auto</dt><dd>model vybrala automatická volba podle náročnosti textu</dd></div>
+      <div><dt>uloženo</dt><dd>shrnutí je z dřívějška – opětovné otevření nic nestojí</dd></div>
+      <div><dt>Kopírovat / Znovu</dt><dd>zkopíruje shrnutí do schránky / vytvoří nové</dd></div>
+      <div><dt>Ověřit / Pin</dt><dd>zobrazí se, jen když máte nastavenou příslušnou službu (níže)</dd></div>
+    </dl>
+  </section>
+
+  <!-- Volitelné funkce -->
+  <section class="card" aria-labelledby="sec-extras">
+    <div class="card-head">
+      <div>
+        <h2 id="sec-extras">Volitelné funkce <span class="optional">kdykoli později</span></h2>
+        <p class="card-desc">Bez nich rozšíření funguje taky – jen se v okně neukážou jejich tlačítka.</p>
+      </div>
+    </div>
+    <div class="features">
+      <article class="feature">
+        <div class="feature-head"><h3>Ověření fake news</h3><span class="badge" id="badge-verify"></span></div>
+        <p>
+          Tlačítko <strong>Ověřit</strong> odhadne věrohodnost stránky a míru manipulativního jazyka.
+          Potřebujete klíč <a href="https://console.typesafe.ai/home" target="_blank" rel="noopener">TypeSafe AI</a>.
+        </p>
+      </article>
+      <article class="feature">
+        <div class="feature-head"><h3>Automatická volba modelu</h3><span class="badge" id="badge-auto"></span></div>
+        <p>
+          S klíčem TypeSafe AI zvolte model <strong>Automaticky podle textu</strong>: na běžné zprávy se použije
+          nejlevnější model, na odborné texty ten nejschopnější.
+        </p>
+      </article>
+      <article class="feature">
+        <div class="feature-head"><h3>Pin</h3><span class="badge" id="badge-pin"></span></div>
+        <p>
+          Tlačítko <strong>Pin</strong> uloží odkaz a shrnutí do <strong>Airtable</strong>, <strong>Craft</strong>
+          nebo <strong>Notion</strong>. Postup pro každou službu najdete v nastavení pod „Jak na to“.
+        </p>
+      </article>
+    </div>
+    <button type="button" class="open-options">Nastavit volitelné funkce</button>
+  </section>
+
+  <!-- Soukromí a náklady -->
+  <section class="card" aria-labelledby="sec-privacy">
+    <div class="card-head">
+      <div>
+        <h2 id="sec-privacy">Soukromí a náklady</h2>
+      </div>
+    </div>
+    <ul class="checks">
+      <li>Stránku rozšíření přečte <strong>jen po kliknutí na ikonu</strong> a jen tu jednu.</li>
+      <li>Klíče a tokeny zůstávají <strong>jen ve vašem prohlížeči</strong>; každý se posílá pouze své službě.</li>
+      <li>Do AI se adresa stránky posílá bez parametrů (<code>?…</code>, <code>#…</code>). Žádný vlastní server, žádné sledování.</li>
+      <li>Rozšíření je zdarma. Za AI platíte přímo poskytovateli podle spotřeby – doporučujeme si u něj nastavit měsíční limit.</li>
+    </ul>
+    <p class="hint">
+      Podrobnosti najdete v <a href="https://github.com/petrkrapek/SULWE#readme" target="_blank" rel="noopener">návodu na GitHubu</a>
+      a v <a href="https://github.com/petrkrapek/SULWE/blob/master/PODMINKY.md" target="_blank" rel="noopener">zásadách ochrany osobních údajů</a>.
+    </p>
+  </section>
+
+  <!-- Potíže -->
+  <section class="card" aria-labelledby="sec-help">
+    <div class="card-head">
+      <div>
+        <h2 id="sec-help">Když něco nejde</h2>
+      </div>
+    </div>
+    <details class="howto">
+      <summary>„Tuto stránku nelze přečíst“</summary>
+      <p>Interní stránky Chromu (<code>chrome://…</code>), Internetový obchod Chrome a vestavěný prohlížeč PDF rozšíření číst nedovolí.</p>
+    </details>
+    <details class="howto">
+      <summary>„API klíč je neplatný“ nebo „nejsou kredity“</summary>
+      <p>Zkontrolujte klíč v nastavení a kredit u poskytovatele (Anthropic, nebo OpenAI).</p>
+    </details>
+    <details class="howto">
+      <summary>Nevidím tlačítko Ověřit nebo Pin</summary>
+      <p>Zobrazí se až po vyplnění klíče TypeSafe AI, resp. údajů pro zvolený cíl Pinu. Štítek v nastavení ukáže, co chybí.</p>
+    </details>
+  </section>
+
+  <p class="privacy">Tento návod kdykoli znovu otevřete z nastavení rozšíření (odkaz Návod v záhlaví).</p>
+  <div class="savebar">
+    <span id="status" role="status" aria-live="polite"></span>
+    <button type="button" class="primary open-options">Otevřít nastavení</button>
+  </div>
+  <script type="module" src="dist/welcome.js"></script>
+</body>
+</html>
