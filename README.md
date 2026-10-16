@@ -84,7 +84,7 @@ Pak stačí na libovolné stránce kliknout na ikonu – shrnutí se začne vypi
 |---|---|
 | Poskytovatel AI | Anthropic (výchozí), nebo OpenAI (+ API klíč a model zvoleného poskytovatele) |
 | Model – Anthropic | Automaticky podle textu, Opus 5.5 (výchozí, nejkvalitnější), Sonnet 5.5, Haiku 5.5 (nejlevnější) |
-| Model – OpenAI | Automaticky podle textu, GPT-6 Astra (výchozí, nejkvalitnější), GPT-6.1 Sol, GPT-6 Luna (nejlevnější) |
+| Model – OpenAI | Automaticky podle textu, GPT-6 Astra (výchozí, nejkvalitnější), GPT-6.1 Sol, GPT-5.6 Terra, GPT-6 Luna (nejlevnější) |
 | Jazyk shrnutí | čeština, angličtina, jazyk stránky |
 | Délka shrnutí | krátké (3–5 bodů), střední, podrobné |
 | Ověření fake news | API klíč TypeSafe AI |

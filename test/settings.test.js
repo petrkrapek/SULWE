@@ -43,6 +43,7 @@ test("modelLabel zkrátí známé i neznámé modely obou poskytovatelů", () =>
   assert.equal(modelLabel("claude-haiku-5-5"), "Haiku 5.5");
   assert.equal(modelLabel("claude-opus-4-8"), "Opus 4.8");
   assert.equal(modelLabel("gpt-6-luna"), "GPT-6 Luna");
+  assert.equal(modelLabel("gpt-5.6-terra"), "GPT-5.6 Terra");
   assert.equal(modelLabel("gpt-6.1-sol-2026-09-01"), "GPT-6.1 Sol");
   assert.equal(modelLabel("gpt-7"), "GPT-7");
 });

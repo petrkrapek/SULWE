@@ -20,6 +20,7 @@ export const OPENAI_MODELS = [
   { id: AUTO_MODEL, label: "Automaticky podle textu (vybírá TypeSafe AI)" },
   { id: "gpt-6-astra", label: "GPT-6 Astra (nejkvalitnější)" },
   { id: "gpt-6.1-sol", label: "GPT-6.1 Sol (rychlejší, levnější)" },
+  { id: "gpt-5.6-terra", label: "GPT-5.6 Terra (vyvážený výkon a cena)" },
   { id: "gpt-6-luna", label: "GPT-6 Luna (nejrychlejší, nejlevnější)" },
 ];
 
