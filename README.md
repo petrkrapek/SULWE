@@ -10,7 +10,7 @@ Rozšíření do Google Chrome, které jedním kliknutím shrne právě otevřen
 a zobrazí shrnutí v malém okně. Volitelně odhadne věrohodnost stránky, samo vybere
 vhodný model podle náročnosti textu a uloží odkaz se shrnutím do Airtable, Craft nebo Notion.
 
-**Aktuální verze:** [0.5.5](https://github.com/petrkrapek/SULWE/releases/tag/v0.5.5) ·
+**Aktuální verze:** [0.5.6](https://github.com/petrkrapek/SULWE/releases/tag/v0.5.6) ·
 [stáhnout ZIP](https://github.com/petrkrapek/SULWE/releases/latest) ·
 historie změn v [CHANGELOG.md](CHANGELOG.md)
 
@@ -262,7 +262,7 @@ Do Chrome Web Store se nahrává **jen ZIP s obsahem složky `extension`** (`man
 archivu), ne celý repozitář. Lokálně ho vytvoříte příkazem `npm run zip`.
 
 > Release vzniká jen z větve `master` – změna verze v pracovní větvi release nezaloží.
-> Release lze vyvolat i ručním nahráním značky (`git tag v0.5.5 && git push origin v0.5.5`)
+> Release lze vyvolat i ručním nahráním značky (`git tag v0.5.6 && git push origin v0.5.6`)
 > – značka musí odpovídat verzi v `manifest.json` a měla by ukazovat na commit v `master`.
 >
 > Jediným zdrojem čísla verze je `extension/manifest.json`; `package.json` verzi nemá.

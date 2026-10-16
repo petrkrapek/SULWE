@@ -7,6 +7,8 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 
 ## [Unreleased]
 
+## [0.5.6] – 2026-10-16
+
 ### Přidáno
 - Třetí poskytovatel AI pro shrnutí: **Mistral** (evropské modely Mistral Large, Medium
   a Small). V nastavení přibyla volba Mistral s vlastním API klíčem a modelem; volají se
@@ -181,7 +183,8 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 - Kopírování shrnutí a jeho opětovné vytvoření.
 - Hotová shrnutí se pamatují do zavření prohlížeče.
 
-[Unreleased]: https://github.com/petrkrapek/SULWE/compare/v0.5.5...master
+[Unreleased]: https://github.com/petrkrapek/SULWE/compare/v0.5.6...master
+[0.5.6]: https://github.com/petrkrapek/SULWE/compare/v0.5.5...v0.5.6
 [0.5.5]: https://github.com/petrkrapek/SULWE/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/petrkrapek/SULWE/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/petrkrapek/SULWE/compare/62697f8...b224fd5
