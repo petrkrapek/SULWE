@@ -1,6 +1,18 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { loadSettings, saveSettings, pinConfigured, MODELS, AUTO_MODEL, AUTO_FALLBACK_MODEL } from "./settings.js";
+import {
+  loadSettings,
+  saveSettings,
+  pinConfigured,
+  modelLabel,
+  providerOf,
+  providerKey,
+  selectedModel,
+  fallbackModel,
+  AUTO_MODEL,
+  PROVIDER_NAMES,
+} from "./settings.js";
 import { summarizePage, describeError } from "./summarize.js";
+import { OpenAIError } from "./openai.js";
 import { renderMarkdown } from "./markdown.js";
 import { factCheckPage, chooseModel, FactCheckError, VERDICTS } from "./factcheck.js";
 import { pinPage, parseTarget, AirtableError } from "./airtable.js";
@@ -19,6 +31,7 @@ const els = {
   error: $("error"),
   notice: $("notice"),
   setup: $("setup"),
+  setupProvider: $("setup-provider"),
   meta: $("meta"),
   regenerate: $("regenerate"),
   copy: $("copy"),
@@ -54,15 +67,6 @@ function showError(text) {
 function showNotice(text) {
   els.notice.textContent = text;
   els.notice.hidden = !text;
-}
-
-// Název modelu bez předpony „Claude“, např. „Haiku 5.5“. Neznámé ID (třeba záložní model
-// po odmítnutí) převedeme z „claude-opus-4-8“ na „Opus 4.8“.
-function modelLabel(id) {
-  const known = MODELS.find((m) => m.id === id);
-  if (known) return known.label.replace(/\s*\(.*\)$/, "");
-  const m = /^claude-([a-z]+)-(\d+)(?:-(\d+))?/.exec(id ?? "");
-  return m ? `${m[1][0].toUpperCase()}${m[1].slice(1)} ${m[3] ? `${m[2]}.${m[3]}` : m[2]}` : id;
 }
 
 // Funkce běží uvnitř stránky (injektuje ji chrome.scripting) – nesmí používat nic zvenku.
@@ -116,17 +120,18 @@ function getPage(tab) {
 
 // Automatická volba modelu přes TypeSafe AI; při chybě použijeme záložní model a upozorníme.
 async function pickModel(page, settings, signal) {
+  const fallback = fallbackModel(settings);
   if (!settings.typesafeKey) {
-    showNotice(`Pro automatickou volbu modelu chybí klíč TypeSafe AI – použit ${modelLabel(AUTO_FALLBACK_MODEL)}.`);
-    return AUTO_FALLBACK_MODEL;
+    showNotice(`Pro automatickou volbu modelu chybí klíč TypeSafe AI – použit ${modelLabel(fallback)}.`);
+    return fallback;
   }
   setStatus("Vybírám model…");
   try {
-    return await chooseModel({ page, apiKey: settings.typesafeKey, signal });
+    return await chooseModel({ page, apiKey: settings.typesafeKey, provider: providerOf(settings), signal });
   } catch (err) {
     if (signal.aborted) throw err;
-    showNotice(`Automatická volba modelu selhala (${err.message}) – použit ${modelLabel(AUTO_FALLBACK_MODEL)}.`);
-    return AUTO_FALLBACK_MODEL;
+    showNotice(`Automatická volba modelu selhala (${err.message}) – použit ${modelLabel(fallback)}.`);
+    return fallback;
   }
 }
 
@@ -150,7 +155,8 @@ async function summarize({ force = false } = {}) {
   currentText = "";
 
   const settings = await loadSettings();
-  if (!settings.apiKey) {
+  if (!providerKey(settings)) {
+    els.setupProvider.textContent = PROVIDER_NAMES[providerOf(settings)];
     els.setup.hidden = false;
     els.regenerate.disabled = false;
     setStatus("");
@@ -183,7 +189,7 @@ async function summarize({ force = false } = {}) {
       showNotice("Stránka je velmi dlouhá – shrnutí vychází jen z její první části.");
     }
 
-    let model = settings.model;
+    let model = selectedModel(settings);
     let auto = false;
     if (model === AUTO_MODEL) {
       auto = true;
@@ -222,7 +228,7 @@ async function summarize({ force = false } = {}) {
   } catch (err) {
     if (err instanceof Anthropic.APIUserAbortError || signal.aborted) return;
     setStatus("");
-    showError(err instanceof Anthropic.AnthropicError ? describeError(err) : err.message);
+    showError(err instanceof Anthropic.AnthropicError || err instanceof OpenAIError ? describeError(err) : err.message);
   } finally {
     if (!signal.aborted) els.regenerate.disabled = false;
   }
