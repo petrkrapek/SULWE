@@ -54,7 +54,8 @@ Po stažení nové verze v `chrome://extensions` klikněte u rozšíření na ik
    z [console.anthropic.com](https://console.anthropic.com/settings/keys), nebo
    z [platform.openai.com](https://platform.openai.com/api-keys) (účet musí mít kredit).
 3. Volitelně zvolte model, jazyk a délku shrnutí, případně vyplňte klíče pro další funkce,
-   a klikněte na **Uložit**.
+   a klikněte na **Uložit**. Štítek u každé části nastavení ukazuje, jestli je připravená
+   („Připraveno“, „Zapnuto“), vypnutá, nebo nedokončená.
 
 Pak stačí na libovolné stránce kliknout na ikonu – shrnutí se začne vypisovat okamžitě.
 
@@ -288,7 +289,7 @@ Závislosti a GitHub Actions hlídá Dependabot ([`.github/dependabot.yml`](.git
 extension/            ← tuto složku načítáte do Chromu
   manifest.json
   popup.html/.css     ← okno se shrnutím
-  options.html        ← nastavení
+  options.html/.css   ← nastavení
   style.css           ← sdílené barvy a styly (světlý i tmavý režim)
   dist/               ← sestavený JavaScript
   icons/

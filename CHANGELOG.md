@@ -16,6 +16,11 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
   Notion a odkaz na stránku či databázi sdílenou s integrací.
 
 ### Změněno
+- Nový, přehlednější design stránky nastavení: tři karty (Shrnutí, Ověření fake news, Pin)
+  se stavovým štítkem (např. „Připraveno · OpenAI“, „Vypnuto“, „Nedokončeno“), přepínače
+  pro poskytovatele AI a cíl Pinu, podrobné návody sbalené pod „Jak na to“, upozornění
+  na neuložené změny a tlačítko Uložit stále na dosah u spodního okraje. Funguje ve
+  světlém i tmavém režimu a v úzkém okně.
 - Rozšíření nově potřebuje oprávnění pro `api.notion.com` (volá se jen při Pinu do Notion);
   Chrome může po aktualizaci požádat o jeho potvrzení.
 - Zásady ochrany osobních údajů popisují i Pin do Notion.
