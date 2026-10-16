@@ -1,4 +1,4 @@
-# Shrnutí stránky – rozšíření do Google Chrome
+# Shrnu.to – shrnutí stránky
 
 [![Poslední verze](https://img.shields.io/github/v/release/petrkrapek/SULWE?label=verze)](https://github.com/petrkrapek/SULWE/releases/latest)
 [![CI](https://github.com/petrkrapek/SULWE/actions/workflows/ci.yml/badge.svg)](https://github.com/petrkrapek/SULWE/actions/workflows/ci.yml)
@@ -6,11 +6,11 @@
 [![Licence](https://img.shields.io/badge/licence-Apache--2.0-blue)](LICENSE)
 ![Chrome](https://img.shields.io/badge/Chrome-Manifest%20V3-4285F4?logo=googlechrome&logoColor=white)
 
-Rozšíření, které jedním kliknutím shrne právě otevřenou webovou stránku pomocí AI
+Rozšíření do Google Chrome, které jedním kliknutím shrne právě otevřenou webovou stránku pomocí AI
 a zobrazí shrnutí v malém okně. Volitelně odhadne věrohodnost stránky, samo vybere
-vhodný model podle náročnosti textu a uloží odkaz se shrnutím do Airtable nebo Craft.
+vhodný model podle náročnosti textu a uloží odkaz se shrnutím do Airtable, Craft nebo Notion.
 
-**Aktuální verze:** [0.5.4](https://github.com/petrkrapek/SULWE/releases/tag/v0.5.4) ·
+**Aktuální verze:** [0.5.5](https://github.com/petrkrapek/SULWE/releases/tag/v0.5.5) ·
 [stáhnout ZIP](https://github.com/petrkrapek/SULWE/releases/latest) ·
 historie změn v [CHANGELOG.md](CHANGELOG.md)
 
@@ -23,6 +23,7 @@ historie změn v [CHANGELOG.md](CHANGELOG.md)
 | **Automatická volba modelu** | podle náročnosti textu zvolí model zvoleného poskytovatele (Haiku / Sonnet / Opus, nebo GPT-6 Luna / Sol / Astra) | API klíč TypeSafe AI |
 | **Pin do Airtable** | uloží URL a shrnutí jako záznam do tabulky | token Airtable |
 | **Pin do Craft** | uloží odkaz a shrnutí jako nový dokument nebo do denní poznámky | API připojení Craft |
+| **Pin do Notion** | uloží odkaz a shrnutí jako podstránku nebo záznam v databázi | token integrace Notion |
 
 Všechny funkce kromě samotného shrnutí jsou volitelné – bez příslušného klíče se jejich
 tlačítka v okně nezobrazují.
@@ -32,7 +33,7 @@ tlačítka v okně nezobrazují.
 ### Z hotového balíčku (doporučeno)
 
 1. Na stránce [nejnovější verze](https://github.com/petrkrapek/SULWE/releases/latest) stáhněte
-   v části **Assets** soubor `shrnuti-stranky-<verze>.zip` a rozbalte ho do vlastní složky.
+   v části **Assets** soubor `shrnu-to-<verze>.zip` a rozbalte ho do vlastní složky.
 2. V Chromu otevřete `chrome://extensions` a vpravo nahoře zapněte **Režim pro vývojáře**.
 3. Klikněte na **Načíst rozbalené** a vyberte rozbalenou složku (tu, ve které je `manifest.json`).
 4. Ikonu rozšíření si připněte na lištu (ikona puzzle → špendlík).
@@ -53,9 +54,13 @@ Po stažení nové verze v `chrome://extensions` klikněte u rozšíření na ik
    z [console.anthropic.com](https://console.anthropic.com/settings/keys), nebo
    z [platform.openai.com](https://platform.openai.com/api-keys) (účet musí mít kredit).
 3. Volitelně zvolte model, jazyk a délku shrnutí, případně vyplňte klíče pro další funkce,
-   a klikněte na **Uložit**.
+   a klikněte na **Uložit**. Štítek u každé části nastavení ukazuje, jestli je připravená
+   („Připraveno“, „Zapnuto“), vypnutá, nebo nedokončená.
 
 Pak stačí na libovolné stránce kliknout na ikonu – shrnutí se začne vypisovat okamžitě.
+
+Po instalaci se rozšíření samo otevře **uvítací stránku s návodem** – provede vás těmito kroky
+a hotové sama odškrtne. Znovu ji otevřete odkazem **Návod** v záhlaví nastavení.
 
 ## Okno rozšíření
 
@@ -88,7 +93,7 @@ Pak stačí na libovolné stránce kliknout na ikonu – shrnutí se začne vypi
 | Jazyk shrnutí | čeština, angličtina, jazyk stránky |
 | Délka shrnutí | krátké (3–5 bodů), střední, podrobné |
 | Ověření fake news | API klíč TypeSafe AI |
-| Pin → Kam ukládat | Airtable, nebo Craft (+ údaje pro zvolenou službu) |
+| Pin → Kam ukládat | Airtable, Craft, nebo Notion (+ údaje pro zvolenou službu) |
 
 ### Poskytovatel AI
 
@@ -134,7 +139,7 @@ Vyžaduje klíč TypeSafe AI. Bez něj, nebo když posouzení selže, se použij
 
 Tlačítko **Pin** (dostupné po dokončení shrnutí) uloží odkaz na stránku a její shrnutí.
 Cíl zvolíte v nastavení v části **Pin → Kam ukládat**. Stav „Připnuto ✓“ se pamatuje
-zvlášť pro každý cíl, takže stejnou stránku můžete uložit do Airtable i do Craft.
+zvlášť pro každý cíl, takže stejnou stránku můžete uložit do Airtable, Craft i Notion.
 
 ### Pin do Craft
 
@@ -174,6 +179,29 @@ Chování:
 - Stejná adresa se uloží jen jednou.
 - Ukládá se celá adresa stránky včetně parametrů, aby odkaz fungoval.
 
+### Pin do Notion
+
+1. Na [notion.so/profile/integrations](https://www.notion.so/profile/integrations) vytvořte
+   **interní integraci** se schopnostmi čtení, vkládání a úprav obsahu a zkopírujte její token (`ntn_…`).
+2. V Notion otevřete cílovou stránku nebo databázi a sdílejte ji s integrací:
+   **••• → Připojení** → vyberte svou integraci.
+3. Do nastavení rozšíření vložte token a odkaz na stránku či databázi (**••• → Kopírovat odkaz**),
+   případně jen její ID.
+
+| Cíl | Výsledek |
+|---|---|
+| **Stránka** | podstránka pojmenovaná podle webu s odkazem, shrnutím a časem uložení |
+| **Databáze** | nový záznam: název webu v hlavním sloupci, adresa ve sloupci typu URL, shrnutí v obsahu záznamu |
+
+Chování u databáze:
+- Stejná adresa se uloží jen jednou (porovnává se sloupec typu URL, přednostně pojmenovaný **URL**).
+- Když databáze sloupec typu URL nemá, rozšíření doplní sloupec **URL**; jinak nic nemaže
+  ani nepřepisuje.
+- Čas uložení se ukazuje v obsahu záznamu; pokud ho chcete i ve sloupci, přidejte do databáze
+  sloupec *Created time* – Notion ho vyplní sám.
+
+Používá se Notion API verze `2026-03-11` (`api.notion.com`).
+
 ## Řešení potíží
 
 | Hláška / situace | Příčina a řešení |
@@ -185,20 +213,22 @@ Chování:
 | Craft: „Cílový dokument je v Craft v koši“ | Dnešní denní poznámka je v koši – obnovte ji, nebo ji z koše trvale smažte. |
 | Craft: „vyžaduje API klíč“ | Vyplňte API klíč připojení (`pdk_…`). |
 | Airtable: „nemá potřebná oprávnění“ | Tokenu chybí některé ze čtyř oprávnění nebo přístup k databázi. |
+| Notion: „nebyla nalezena“ | Stránka nebo databáze není sdílená s integrací (••• → Připojení), nebo je v nastavení špatný odkaz. |
+| Notion: „nemá potřebná oprávnění“ | Integraci chybí schopnost čtení, vkládání nebo úprav obsahu. |
 
 ## Soukromí a bezpečnost
 
 - Stránku rozšíření přečte jen po kliknutí na ikonu, jen tu jednu (oprávnění `activeTab`).
 - Text stránky se posílá pouze do zvolených služeb: Anthropic, nebo OpenAI (shrnutí – jen zvolenému
   poskytovateli), TypeSafe AI (ověření,
-  volba modelu), Airtable nebo Craft (Pin). Žádný vlastní server, žádné sledování.
+  volba modelu), Airtable, Craft nebo Notion (Pin). Žádný vlastní server, žádné sledování.
 - Do AI služeb se adresa stránky posílá bez parametrů a kotvy (`?…`, `#…`), protože v nich
   mohou být přihlašovací tokeny nebo osobní údaje.
 - API klíče jsou uložené jen lokálně v prohlížeči (`chrome.storage.local`) a každý se posílá
   pouze na adresu své služby: `api.anthropic.com`, `api.openai.com`, `api.typesafe.ai`,
-  `api.airtable.com`, `connect.craft.do`.
+  `api.airtable.com`, `connect.craft.do`, `api.notion.com`.
 - Stránky rozšíření mají přísnou Content Security Policy: smějí spouštět jen vlastní skripty
-  a připojovat se jen k těmto pěti API.
+  a připojovat se jen k těmto šesti API.
 - Doporučujeme nastavit v konzolích jednotlivých služeb měsíční limit útraty.
 
 Podrobnosti o zpracování údajů jsou v [zásadách ochrany osobních údajů](PODMINKY.md).
@@ -227,7 +257,7 @@ Do Chrome Web Store se nahrává **jen ZIP s obsahem složky `extension`** (`man
 archivu), ne celý repozitář. Lokálně ho vytvoříte příkazem `npm run zip`.
 
 > Release vzniká jen z větve `master` – změna verze v pracovní větvi release nezaloží.
-> Release lze vyvolat i ručním nahráním značky (`git tag v0.5.4 && git push origin v0.5.4`)
+> Release lze vyvolat i ručním nahráním značky (`git tag v0.5.5 && git push origin v0.5.5`)
 > – značka musí odpovídat verzi v `manifest.json` a měla by ukazovat na commit v `master`.
 >
 > Jediným zdrojem čísla verze je `extension/manifest.json`; `package.json` verzi nemá.
@@ -262,7 +292,8 @@ Závislosti a GitHub Actions hlídá Dependabot ([`.github/dependabot.yml`](.git
 extension/            ← tuto složku načítáte do Chromu
   manifest.json
   popup.html/.css     ← okno se shrnutím
-  options.html        ← nastavení
+  options.html/.css   ← nastavení
+  welcome.html/.css   ← uvítací stránka s návodem (otevře se po instalaci)
   style.css           ← sdílené barvy a styly (světlý i tmavý režim)
   dist/               ← sestavený JavaScript
   icons/
@@ -273,10 +304,13 @@ src/
   factcheck.js        ← TypeSafe AI (Jev): ověření fake news a automatická volba modelu
   airtable.js         ← Pin do Airtable
   craft.js            ← Pin do Craft (nový dokument / denní poznámka)
+  notion.js           ← Pin do Notion (podstránka / záznam v databázi)
   markdown.js         ← bezpečné vykreslení Markdownu (bez innerHTML)
   page.js             ← očištění dat stránky před odesláním do AI
   settings.js         ← nastavení a jejich výchozí hodnoty
   options.js          ← stránka nastavení
+  welcome.js          ← uvítací stránka (odškrtávání hotových kroků)
+  background.js       ← service worker: po instalaci otevře uvítací stránku
 test/                 ← unit testy (node --test)
 scripts/zip.mjs       ← tvorba balíčku pro Chrome Web Store
 .github/workflows/    ← CI (kontrola PR) a automatické vytvoření GitHub Release

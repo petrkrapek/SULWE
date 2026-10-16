@@ -1,5 +1,5 @@
 {
-  "name": "shrnuti-stranky",
+  "name": "shrnu-to",
   "private": true,
   "description": "Rozšíření do Chromu, které pomocí AI shrne aktuální webovou stránku.",
   "license": "Apache-2.0",
@@ -9,7 +9,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "build": "esbuild src/popup.js src/options.js --bundle --format=esm --target=chrome120 --minify --outdir=extension/dist",
+    "build": "esbuild src/popup.js src/options.js src/welcome.js src/background.js --bundle --format=esm --target=chrome120 --minify --outdir=extension/dist",
     "watch": "npm run build -- --watch",
     "zip": "npm run build && node scripts/zip.mjs",
     "lint": "eslint .",

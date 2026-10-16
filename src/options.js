@@ -1,9 +1,12 @@
 import {
   loadSettings,
   saveSettings,
+  pinConfigured,
+  providerKey,
   MODELS,
   OPENAI_MODELS,
   PROVIDERS,
+  PROVIDER_NAMES,
   LANGUAGES,
   LENGTHS,
   AUTO_MODEL,
@@ -11,9 +14,11 @@ import {
 } from "./settings.js";
 import { parseConnectionUrl, CRAFT_MODES } from "./craft.js";
 import { DEFAULT_TABLE } from "./airtable.js";
+import { parseNotionId } from "./notion.js";
 
 const form = document.getElementById("form");
 const status = document.getElementById("status");
+const $ = (id) => document.getElementById(id);
 
 function fillSelect(select, items) {
   for (const item of items) {
@@ -24,57 +29,105 @@ function fillSelect(select, items) {
   }
 }
 
-fillSelect(form.provider, PROVIDERS);
+// Přepínač z položek s popiskem „Název – popis“ (poskytovatel AI, cíl Pinu).
+function fillChoices(container, name, items) {
+  for (const item of items) {
+    const [title, sub] = item.label.split(" – ");
+    const label = document.createElement("label");
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = name;
+    input.value = item.id;
+    label.append(input, title);
+    if (sub) {
+      const small = document.createElement("span");
+      small.className = "sub";
+      small.textContent = sub;
+      label.append(small);
+    }
+    container.append(label);
+  }
+}
+
+fillChoices($("provider-choices"), "provider", PROVIDERS);
+fillChoices($("pinTarget-choices"), "pinTarget", PIN_TARGETS);
 fillSelect(form.model, MODELS);
 fillSelect(form.openaiModel, OPENAI_MODELS);
 fillSelect(form.language, LANGUAGES);
 fillSelect(form.length, LENGTHS);
-fillSelect(form.pinTarget, PIN_TARGETS);
 fillSelect(form.craftMode, CRAFT_MODES);
 
+const version = globalThis.chrome?.runtime?.getManifest?.().version;
+if (version) $("version").textContent = version;
+
+// Pole formuláře, která se ukládají beze změny (texty se jen oříznou).
+const FIELDS = [
+  "provider",
+  "apiKey",
+  "model",
+  "openaiKey",
+  "openaiModel",
+  "language",
+  "length",
+  "typesafeKey",
+  "pinTarget",
+  "airtableToken",
+  "airtableTarget",
+  "airtableTable",
+  "craftMode",
+  "craftUrl",
+  "craftKey",
+  "notionToken",
+  "notionTarget",
+];
+
 const settings = await loadSettings();
-form.provider.value = settings.provider;
-form.apiKey.value = settings.apiKey;
-form.model.value = settings.model;
-form.openaiKey.value = settings.openaiKey;
-form.openaiModel.value = settings.openaiModel;
+for (const name of FIELDS) form[name].value = settings[name];
 
-// Zobrazíme jen pole pro zvoleného poskytovatele AI (stejně jako u cíle Pinu).
-const updateProvider = () => {
-  for (const provider of PROVIDERS) {
-    document.getElementById(`provider-${provider.id}`).hidden = form.provider.value !== provider.id;
-  }
-};
-form.provider.addEventListener("change", updateProvider);
-updateProvider();
+const collect = () => Object.fromEntries(FIELDS.map((name) => [name, form[name].value.trim()]));
 
-// Vysvětlení automatické volby modelu ukážeme jen při jejím výběru.
-for (const select of [form.model, form.openaiModel]) {
-  const hint = document.getElementById(`${select.name}-hint`);
-  const update = () => (hint.hidden = select.value !== AUTO_MODEL);
-  select.addEventListener("change", update);
-  update();
+function setBadge(id, tone, text) {
+  const badge = $(id);
+  badge.dataset.tone = tone;
+  badge.textContent = text;
 }
-form.language.value = settings.language;
-form.length.value = settings.length;
 
-form.typesafeKey.value = settings.typesafeKey;
-form.pinTarget.value = settings.pinTarget;
-form.craftUrl.value = settings.craftUrl;
-form.craftMode.value = settings.craftMode;
-form.craftKey.value = settings.craftKey;
-form.airtableToken.value = settings.airtableToken;
+// Zobrazí pole jen pro zvoleného poskytovatele a cíl Pinu a aktualizuje stavové štítky karet.
+function refresh() {
+  const values = collect();
+  for (const provider of PROVIDERS) $(`provider-${provider.id}`).hidden = values.provider !== provider.id;
+  for (const target of PIN_TARGETS) $(`pin-${target.id}`).hidden = values.pinTarget !== target.id;
+  for (const select of [form.model, form.openaiModel]) $(`${select.name}-hint`).hidden = select.value !== AUTO_MODEL;
 
-// Zobrazíme jen pole pro zvolený cíl Pinu.
-const updatePinTarget = () => {
-  for (const target of PIN_TARGETS) {
-    document.getElementById(`pin-${target.id}`).hidden = form.pinTarget.value !== target.id;
-  }
-};
-form.pinTarget.addEventListener("change", updatePinTarget);
-updatePinTarget();
-form.airtableTarget.value = settings.airtableTarget;
-form.airtableTable.value = settings.airtableTable;
+  const providerName = PROVIDER_NAMES[values.provider] ?? PROVIDER_NAMES.anthropic;
+  if (providerKey(values)) setBadge("badge-summary", "ok", `Připraveno · ${providerName}`);
+  else setBadge("badge-summary", "warn", `Chybí klíč ${providerName}`);
+
+  if (values.typesafeKey) setBadge("badge-verify", "ok", "Zapnuto");
+  else setBadge("badge-verify", "off", "Vypnuto");
+
+  const targetName = PIN_TARGETS.find((t) => t.id === values.pinTarget)?.label.split(" – ")[0];
+  const pinFields = {
+    airtable: ["airtableToken", "airtableTarget"],
+    craft: ["craftUrl", "craftKey"],
+    notion: ["notionToken", "notionTarget"],
+  }[values.pinTarget];
+  if (pinConfigured(values)) setBadge("badge-pin", "ok", `Zapnuto · ${targetName}`);
+  else if (pinFields?.some((name) => values[name])) setBadge("badge-pin", "warn", "Nedokončeno");
+  else setBadge("badge-pin", "off", "Vypnuto");
+}
+
+function setStatus(text, tone = "") {
+  status.textContent = text;
+  status.dataset.tone = tone;
+}
+
+form.addEventListener("input", () => {
+  refresh();
+  setStatus("Neuložené změny", "dirty");
+});
+form.addEventListener("change", refresh);
+refresh();
 
 for (const button of document.querySelectorAll(".toggle")) {
   button.addEventListener("click", () => {
@@ -87,34 +140,27 @@ for (const button of document.querySelectorAll(".toggle")) {
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  let craftUrl = form.craftUrl.value.trim();
-  if (craftUrl) {
-    const normalized = parseConnectionUrl(craftUrl);
+  const values = collect();
+  if (values.craftUrl) {
+    const normalized = parseConnectionUrl(values.craftUrl);
     if (!normalized) {
-      status.textContent = "Adresa připojení Craft musí mít tvar https://connect.craft.do/links/…/api/v1";
+      setStatus("Adresa připojení Craft musí mít tvar https://connect.craft.do/links/…/api/v1", "error");
+      form.craftUrl.focus();
       return;
     }
-    craftUrl = form.craftUrl.value = normalized;
+    values.craftUrl = form.craftUrl.value = normalized;
   }
-  await saveSettings({
-    pinTarget: form.pinTarget.value,
-    craftUrl,
-    craftMode: form.craftMode.value,
-    craftKey: form.craftKey.value.trim(),
-    provider: form.provider.value,
-    apiKey: form.apiKey.value.trim(),
-    model: form.model.value,
-    openaiKey: form.openaiKey.value.trim(),
-    openaiModel: form.openaiModel.value,
-    language: form.language.value,
-    length: form.length.value,
-    typesafeKey: form.typesafeKey.value.trim(),
-    airtableToken: form.airtableToken.value.trim(),
-    airtableTarget: form.airtableTarget.value.trim(),
-    airtableTable: form.airtableTable.value.trim() || DEFAULT_TABLE,
-  });
+  if (values.notionTarget && !parseNotionId(values.notionTarget)) {
+    setStatus("Adresa Notion musí být odkaz na stránku nebo databázi (případně její ID).", "error");
+    form.notionTarget.focus();
+    return;
+  }
+  if (!values.airtableTable) values.airtableTable = form.airtableTable.value = DEFAULT_TABLE;
+  await saveSettings(values);
   // Po změně nastavení zahodíme uložená shrnutí a ověření, ať se vytvoří znovu.
   await chrome.storage.session.clear();
-  status.textContent = "Uloženo.";
-  setTimeout(() => (status.textContent = ""), 2000);
+  setStatus("Uloženo ✓", "ok");
+  setTimeout(() => {
+    if (status.dataset.tone === "ok") setStatus("");
+  }, 2000);
 });

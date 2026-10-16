@@ -17,6 +17,7 @@ import { renderMarkdown } from "./markdown.js";
 import { factCheckPage, chooseModel, FactCheckError, VERDICTS } from "./factcheck.js";
 import { pinPage, parseTarget, AirtableError } from "./airtable.js";
 import { pinToCraft, CraftError } from "./craft.js";
+import { pinToNotion, NotionError } from "./notion.js";
 
 // Horní mez délky textu stránky (znaky). Běžné stránky jsou mnohem kratší.
 const MAX_CHARS = 400_000;
@@ -137,9 +138,9 @@ async function pickModel(page, settings, signal) {
 
 const cacheKey = (tab) => `summary:${tab.url}`;
 const verdictKey = (tab) => `verdict:${tab.url}`;
-// Stav Pinu pamatujeme zvlášť pro každý cíl (Airtable / Craft).
+// Stav Pinu pamatujeme zvlášť pro každý cíl (Airtable / Craft / Notion).
 const pinKey = (tab, target) => `pin:${target}:${tab.url}`;
-const PIN_NAMES = { airtable: "Airtable", craft: "Craft" };
+const PIN_NAMES = { airtable: "Airtable", craft: "Craft", notion: "Notion" };
 
 async function summarize({ force = false } = {}) {
   controller?.abort();
@@ -307,6 +308,26 @@ async function pinToAirtable(settings, tab, signal) {
   return result.status;
 }
 
+// Uloží stránku do zvoleného cíle Pinu, vrací "created" | "exists".
+async function pinTo(target, settings, tab, signal) {
+  const note = { title: tab.title, url: tab.url, summary: currentText, signal };
+  switch (target) {
+    case "craft":
+      return (
+        await pinToCraft({
+          connectionUrl: settings.craftUrl,
+          apiKey: settings.craftKey,
+          mode: settings.craftMode,
+          ...note,
+        })
+      ).status;
+    case "notion":
+      return (await pinToNotion({ token: settings.notionToken, target: settings.notionTarget, ...note })).status;
+    default:
+      return await pinToAirtable(settings, tab, signal);
+  }
+}
+
 async function pin() {
   const settings = await loadSettings();
   if (!pinConfigured(settings) || !currentText) return;
@@ -318,20 +339,7 @@ async function pin() {
   showError("");
   try {
     const tab = await getActiveTab();
-    const status =
-      target === "craft"
-        ? (
-            await pinToCraft({
-              connectionUrl: settings.craftUrl,
-              apiKey: settings.craftKey,
-              mode: settings.craftMode,
-              title: tab.title,
-              url: tab.url,
-              summary: currentText,
-              signal,
-            })
-          ).status
-        : await pinToAirtable(settings, tab, signal);
+    const status = await pinTo(target, settings, tab, signal);
     showPinned(status, target);
     await chrome.storage.session.set({ [pinKey(tab, target)]: status });
   } catch (err) {
@@ -340,7 +348,7 @@ async function pin() {
     showError(
       signal.aborted
         ? `${PIN_NAMES[target]} neodpověděl včas. Zkuste to prosím znovu.`
-        : err instanceof AirtableError || err instanceof CraftError
+        : err instanceof AirtableError || err instanceof CraftError || err instanceof NotionError
           ? err.message
           : `Uložení do ${PIN_NAMES[target]} selhalo: ${err.message}`,
     );

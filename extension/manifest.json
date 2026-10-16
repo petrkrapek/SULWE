@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
-  "name": "Shrnutí stránky",
-  "version": "0.5.4",
+  "name": "Shrnu.to – shrnutí stránky",
+  "short_name": "Shrnu.to",
+  "version": "0.5.5",
   "description": "Pomocí AI shrne aktuální webovou stránku a volitelně posoudí, zda nejde o fake news.",
   "action": {
-    "default_title": "Shrnout stránku",
+    "default_title": "Shrnu.to – shrnout stránku",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
@@ -20,6 +21,10 @@
     "128": "icons/icon128.png"
   },
   "options_page": "options.html",
+  "background": {
+    "service_worker": "dist/background.js",
+    "type": "module"
+  },
   "permissions": [
     "activeTab",
     "scripting",
@@ -30,9 +35,10 @@
     "https://api.openai.com/*",
     "https://api.typesafe.ai/*",
     "https://api.airtable.com/*",
-    "https://connect.craft.do/*"
+    "https://connect.craft.do/*",
+    "https://api.notion.com/*"
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; connect-src https://api.anthropic.com https://api.openai.com https://api.typesafe.ai https://api.airtable.com https://connect.craft.do"
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; connect-src https://api.anthropic.com https://api.openai.com https://api.typesafe.ai https://api.airtable.com https://connect.craft.do https://api.notion.com"
   }
 }

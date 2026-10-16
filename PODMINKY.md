@@ -1,8 +1,8 @@
-Zásady ochrany osobních údajů – Shrnutí stránky
+Zásady ochrany osobních údajů – Shrnu.to
 
 Poslední aktualizace: 16. října 2026
 
-Tyto zásady popisují zpracování údajů při používání rozšíření Shrnutí stránky. Rozšíření vytváří shrnutí aktuální webové stránky pomocí služby Anthropic, nebo OpenAI – podle poskytovatele zvoleného v nastavení. Volitelně umožňuje posoudit věrohodnost obsahu stránky a automaticky zvolit model pomocí TypeSafe AI a uložit odkaz se shrnutím do služby Airtable nebo Craft.
+Tyto zásady popisují zpracování údajů při používání rozšíření Shrnu.to – shrnutí stránky (dále „Shrnu.to“). Rozšíření vytváří shrnutí aktuální webové stránky pomocí služby Anthropic, nebo OpenAI – podle poskytovatele zvoleného v nastavení. Volitelně umožňuje posoudit věrohodnost obsahu stránky a automaticky zvolit model pomocí TypeSafe AI a uložit odkaz se shrnutím do služby Airtable, Craft nebo Notion.
 
 1. Jaké údaje rozšíření zpracovává
 
@@ -10,7 +10,7 @@ Po aktivaci rozšíření uživatelem načte název, URL a viditelný text aktu�
 
 Obsah stránky může zahrnovat osobní či důvěrné údaje, pokud jsou na ní zobrazeny. Rozšíření proto používejte pouze na stránkách, jejichž obsah můžete předat příslušným službám.
 
-Rozšíření dále zpracovává API klíče a přístupové údaje zadané uživatelem (Anthropic, OpenAI, TypeSafe AI, Airtable, Craft) a nastavení poskytovatele AI, modelu, jazyka, délky shrnutí a cíle Pinu.
+Rozšíření dále zpracovává API klíče a přístupové údaje zadané uživatelem (Anthropic, OpenAI, TypeSafe AI, Airtable, Craft, Notion) a nastavení poskytovatele AI, modelu, jazyka, délky shrnutí a cíle Pinu.
 
 2. Předávání údajů externím službám
 
@@ -24,6 +24,8 @@ API klíč TypeSafe AI se používá k autorizaci těchto požadavků.
 Pokud uživatel nastaví Pin do Airtable a klikne na tlačítko Pin, odesílá se úplná URL stránky (včetně parametrů, aby uložený odkaz fungoval) a vytvořené shrnutí službě Airtable prostřednictvím api.airtable.com a ukládají se jako záznam do databáze uživatele. Rozšíření může v databázi založit tabulku nebo sloupce, případně celou databázi v pracovním prostoru uživatele; existující záznamy nemění ani nemaže.
 
 Pokud uživatel nastaví Pin do Craft a klikne na tlačítko Pin, odesílá se název stránky, úplná URL stránky (včetně parametrů), vytvořené shrnutí a čas uložení službě Craft prostřednictvím connect.craft.do a ukládají se jako nový dokument nebo jako podstránka denní poznámky uživatele.
+
+Pokud uživatel nastaví Pin do Notion a klikne na tlačítko Pin, odesílá se název stránky, úplná URL stránky (včetně parametrů), vytvořené shrnutí a čas uložení službě Notion prostřednictvím api.notion.com a ukládají se jako podstránka zvolené stránky nebo jako záznam ve zvolené databázi uživatele. Rozšíření může do databáze přidat sloupec URL; existující záznamy nemění ani nemaže. Ke kontrole, zda už stránka v databázi uložená je, rozšíření v databázi vyhledá záznam se stejnou URL.
 
 Každý API klíč se odesílá pouze službě, ke které náleží. Požadavky jsou přenášeny prostřednictvím HTTPS.
 

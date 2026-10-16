@@ -98,18 +98,26 @@ export const DEFAULTS = {
   airtableToken: "",
   airtableTarget: "",
   airtableTable: "Shrnutí stránek",
+  notionToken: "",
+  notionTarget: "",
 };
 
 export const PIN_TARGETS = [
   { id: "airtable", label: "Airtable – záznam do tabulky" },
   { id: "craft", label: "Craft – nová poznámka (dokument)" },
+  { id: "notion", label: "Notion – podstránka nebo záznam v databázi" },
 ];
 
 /** Je zvolený cíl Pinu nastavený tak, že se dá použít? */
 export function pinConfigured(settings) {
-  return settings.pinTarget === "craft"
-    ? Boolean(settings.craftUrl && settings.craftKey)
-    : Boolean(settings.airtableToken);
+  switch (settings.pinTarget) {
+    case "craft":
+      return Boolean(settings.craftUrl && settings.craftKey);
+    case "notion":
+      return Boolean(settings.notionToken && settings.notionTarget);
+    default:
+      return Boolean(settings.airtableToken);
+  }
 }
 
 export async function loadSettings() {

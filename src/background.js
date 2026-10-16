@@ -1,0 +1,7 @@
+// Service worker rozšíření: po první instalaci otevře uvítací stránku s návodem.
+
+chrome.runtime.onInstalled.addListener(({ reason }) => {
+  if (reason === chrome.runtime.OnInstalledReason.INSTALL) {
+    chrome.tabs.create({ url: chrome.runtime.getURL("welcome.html") });
+  }
+});

@@ -1,11 +1,35 @@
 # Changelog
 
-Všechny podstatné změny rozšíření **Shrnutí stránky** jsou zapsané v tomto souboru.
+Všechny podstatné změny rozšíření **Shrnu.to – shrnutí stránky** (dříve „Shrnutí stránky“) jsou zapsané v tomto souboru.
 
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/)
 a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 
 ## [Unreleased]
+
+## [0.5.5] – 2026-10-16
+
+### Přidáno
+- Uvítací stránka s návodem, která se otevře hned po instalaci rozšíření: tři kroky
+  do začátku (připnutí ikony, API klíč, první shrnutí), které se podle nastavení samy
+  odškrtávají, ukázka okna rozšíření, přehled volitelných funkcí se stavem, soukromí
+  a řešení potíží. Kdykoli ji znovu otevřete odkazem **Návod** v záhlaví nastavení.
+- Pin do Notion: odkaz a shrnutí se uloží jako podstránka zvolené stránky, nebo jako záznam
+  ve zvolené databázi (název, sloupec URL, shrnutí v obsahu záznamu). Do databáze se stejná
+  adresa neuloží dvakrát a chybějící sloupec URL se doplní. Stačí token interní integrace
+  Notion a odkaz na stránku či databázi sdílenou s integrací.
+
+### Změněno
+- Rozšíření se jmenuje **Shrnu.to – shrnutí stránky** (krátce Shrnu.to, dříve „Shrnutí stránky“).
+  Balíček v release se jmenuje `shrnu-to-<verze>.zip`. Nastavení i klíče zůstávají zachované.
+- Nový, přehlednější design stránky nastavení: tři karty (Shrnutí, Ověření fake news, Pin)
+  se stavovým štítkem (např. „Připraveno · OpenAI“, „Vypnuto“, „Nedokončeno“), přepínače
+  pro poskytovatele AI a cíl Pinu, podrobné návody sbalené pod „Jak na to“, upozornění
+  na neuložené změny a tlačítko Uložit stále na dosah u spodního okraje. Funguje ve
+  světlém i tmavém režimu a v úzkém okně.
+- Rozšíření nově potřebuje oprávnění pro `api.notion.com` (volá se jen při Pinu do Notion);
+  Chrome může po aktualizaci požádat o jeho potvrzení.
+- Zásady ochrany osobních údajů popisují i Pin do Notion.
 
 ## [0.5.4] – 2026-10-16
 
@@ -146,7 +170,8 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 - Kopírování shrnutí a jeho opětovné vytvoření.
 - Hotová shrnutí se pamatují do zavření prohlížeče.
 
-[Unreleased]: https://github.com/petrkrapek/SULWE/compare/v0.5.4...master
+[Unreleased]: https://github.com/petrkrapek/SULWE/compare/v0.5.5...master
+[0.5.5]: https://github.com/petrkrapek/SULWE/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/petrkrapek/SULWE/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/petrkrapek/SULWE/compare/62697f8...b224fd5
 [0.5.2]: https://github.com/petrkrapek/SULWE/compare/f787a91...62697f8
