@@ -1,4 +1,4 @@
-# Shrnutí stránky – rozšíření do Google Chrome
+# Shrnu.to – shrnutí stránky
 
 [![Poslední verze](https://img.shields.io/github/v/release/petrkrapek/SULWE?label=verze)](https://github.com/petrkrapek/SULWE/releases/latest)
 [![CI](https://github.com/petrkrapek/SULWE/actions/workflows/ci.yml/badge.svg)](https://github.com/petrkrapek/SULWE/actions/workflows/ci.yml)
@@ -6,7 +6,7 @@
 [![Licence](https://img.shields.io/badge/licence-Apache--2.0-blue)](LICENSE)
 ![Chrome](https://img.shields.io/badge/Chrome-Manifest%20V3-4285F4?logo=googlechrome&logoColor=white)
 
-Rozšíření, které jedním kliknutím shrne právě otevřenou webovou stránku pomocí AI
+Rozšíření do Google Chrome, které jedním kliknutím shrne právě otevřenou webovou stránku pomocí AI
 a zobrazí shrnutí v malém okně. Volitelně odhadne věrohodnost stránky, samo vybere
 vhodný model podle náročnosti textu a uloží odkaz se shrnutím do Airtable, Craft nebo Notion.
 
@@ -33,7 +33,7 @@ tlačítka v okně nezobrazují.
 ### Z hotového balíčku (doporučeno)
 
 1. Na stránce [nejnovější verze](https://github.com/petrkrapek/SULWE/releases/latest) stáhněte
-   v části **Assets** soubor `shrnuti-stranky-<verze>.zip` a rozbalte ho do vlastní složky.
+   v části **Assets** soubor `shrnu-to-<verze>.zip` a rozbalte ho do vlastní složky.
 2. V Chromu otevřete `chrome://extensions` a vpravo nahoře zapněte **Režim pro vývojáře**.
 3. Klikněte na **Načíst rozbalené** a vyberte rozbalenou složku (tu, ve které je `manifest.json`).
 4. Ikonu rozšíření si připněte na lištu (ikona puzzle → špendlík).

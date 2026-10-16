@@ -1,6 +1,6 @@
 # Changelog
 
-Všechny podstatné změny rozšíření **Shrnutí stránky** jsou zapsané v tomto souboru.
+Všechny podstatné změny rozšíření **Shrnu.to – shrnutí stránky** (dříve „Shrnutí stránky“) jsou zapsané v tomto souboru.
 
 Formát vychází z [Keep a Changelog](https://keepachangelog.com/cs/1.1.0/)
 a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
@@ -20,6 +20,8 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
   Notion a odkaz na stránku či databázi sdílenou s integrací.
 
 ### Změněno
+- Rozšíření se jmenuje **Shrnu.to – shrnutí stránky** (krátce Shrnu.to, dříve „Shrnutí stránky“).
+  Balíček v release se jmenuje `shrnu-to-<verze>.zip`. Nastavení i klíče zůstávají zachované.
 - Nový, přehlednější design stránky nastavení: tři karty (Shrnutí, Ověření fake news, Pin)
   se stavovým štítkem (např. „Připraveno · OpenAI“, „Vypnuto“, „Nedokončeno“), přepínače
   pro poskytovatele AI a cíl Pinu, podrobné návody sbalené pod „Jak na to“, upozornění

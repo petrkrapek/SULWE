@@ -3,7 +3,7 @@ import { execFileSync } from "node:child_process";
 import { readFileSync, mkdirSync, rmSync } from "node:fs";
 
 const { version } = JSON.parse(readFileSync("extension/manifest.json", "utf8"));
-const out = `release/shrnuti-stranky-${version}.zip`;
+const out = `release/shrnu-to-${version}.zip`;
 mkdirSync("release", { recursive: true });
 rmSync(out, { force: true });
 execFileSync("zip", ["-r", "-X", `../${out}`, ".", "-x", ".*", "*/.*"], { cwd: "extension", stdio: "inherit" });

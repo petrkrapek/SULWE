@@ -1,8 +1,8 @@
-Zásady ochrany osobních údajů – Shrnutí stránky
+Zásady ochrany osobních údajů – Shrnu.to
 
 Poslední aktualizace: 16. října 2026
 
-Tyto zásady popisují zpracování údajů při používání rozšíření Shrnutí stránky. Rozšíření vytváří shrnutí aktuální webové stránky pomocí služby Anthropic, nebo OpenAI – podle poskytovatele zvoleného v nastavení. Volitelně umožňuje posoudit věrohodnost obsahu stránky a automaticky zvolit model pomocí TypeSafe AI a uložit odkaz se shrnutím do služby Airtable, Craft nebo Notion.
+Tyto zásady popisují zpracování údajů při používání rozšíření Shrnu.to – shrnutí stránky (dále „Shrnu.to“). Rozšíření vytváří shrnutí aktuální webové stránky pomocí služby Anthropic, nebo OpenAI – podle poskytovatele zvoleného v nastavení. Volitelně umožňuje posoudit věrohodnost obsahu stránky a automaticky zvolit model pomocí TypeSafe AI a uložit odkaz se shrnutím do služby Airtable, Craft nebo Notion.
 
 1. Jaké údaje rozšíření zpracovává
 
