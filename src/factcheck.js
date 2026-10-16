@@ -133,7 +133,7 @@ const COMPLEXITY_QUESTION = {
   },
 };
 
-/** Vrátí ID modelu daného poskytovatele (Anthropic / OpenAI) vhodného pro daný text. */
+/** Vrátí ID modelu daného poskytovatele (Anthropic / OpenAI / Mistral) vhodného pro daný text. */
 export async function chooseModel({ page, apiKey, provider = "anthropic", signal }) {
   const data = await callJev({ apiKey, state: buildState(page), questions: COMPLEXITY_QUESTION, signal });
   const tiers = TIER_MODELS[provider] ?? TIER_MODELS.anthropic;

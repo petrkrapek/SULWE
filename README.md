@@ -10,7 +10,7 @@ Rozšíření do Google Chrome, které jedním kliknutím shrne právě otevřen
 a zobrazí shrnutí v malém okně. Volitelně odhadne věrohodnost stránky, samo vybere
 vhodný model podle náročnosti textu a uloží odkaz se shrnutím do Airtable, Craft nebo Notion.
 
-**Aktuální verze:** [0.5.5](https://github.com/petrkrapek/SULWE/releases/tag/v0.5.5) ·
+**Aktuální verze:** [0.5.6](https://github.com/petrkrapek/SULWE/releases/tag/v0.5.6) ·
 [stáhnout ZIP](https://github.com/petrkrapek/SULWE/releases/latest) ·
 historie změn v [CHANGELOG.md](CHANGELOG.md)
 
@@ -18,7 +18,7 @@ historie změn v [CHANGELOG.md](CHANGELOG.md)
 
 | Funkce | Popis | Potřebujete |
 |---|---|---|
-| **Shrnutí stránky** | průběžně vypisované shrnutí v okně rozšíření; kopírování, opětovné vytvoření | API klíč Anthropic, nebo OpenAI |
+| **Shrnutí stránky** | průběžně vypisované shrnutí v okně rozšíření; kopírování, opětovné vytvoření | API klíč Anthropic, OpenAI, nebo Mistral |
 | **Ověření fake news** | tlačítko *Ověřit* odhadne věrohodnost stránky a míru manipulace | API klíč TypeSafe AI |
 | **Automatická volba modelu** | podle náročnosti textu zvolí model zvoleného poskytovatele (Haiku / Sonnet / Opus, nebo GPT-6 Luna / Sol / Astra) | API klíč TypeSafe AI |
 | **Pin do Airtable** | uloží URL a shrnutí jako záznam do tabulky | token Airtable |
@@ -50,9 +50,10 @@ Po stažení nové verze v `chrome://extensions` klikněte u rozšíření na ik
 ## První spuštění
 
 1. Klikněte na ikonu rozšíření → **Otevřít nastavení**.
-2. Zvolte **poskytovatele AI** (Anthropic, nebo OpenAI) a vložte jeho API klíč
-   z [console.anthropic.com](https://console.anthropic.com/settings/keys), nebo
-   z [platform.openai.com](https://platform.openai.com/api-keys) (účet musí mít kredit).
+2. Zvolte **poskytovatele AI** (Anthropic, OpenAI, nebo Mistral) a vložte jeho API klíč
+   z [console.anthropic.com](https://console.anthropic.com/settings/keys),
+   [platform.openai.com](https://platform.openai.com/api-keys), resp.
+   [console.mistral.ai](https://console.mistral.ai/api-keys) (účet musí mít kredit).
 3. Volitelně zvolte model, jazyk a délku shrnutí, případně vyplňte klíče pro další funkce,
    a klikněte na **Uložit**. Štítek u každé části nastavení ukazuje, jestli je připravená
    („Připraveno“, „Zapnuto“), vypnutá, nebo nedokončená.
@@ -87,9 +88,10 @@ a hotové sama odškrtne. Znovu ji otevřete odkazem **Návod** v záhlaví nast
 
 | Volba | Možnosti |
 |---|---|
-| Poskytovatel AI | Anthropic (výchozí), nebo OpenAI (+ API klíč a model zvoleného poskytovatele) |
+| Poskytovatel AI | Anthropic (výchozí), OpenAI, nebo Mistral (+ API klíč a model zvoleného poskytovatele) |
 | Model – Anthropic | Automaticky podle textu, Opus 5.5 (výchozí, nejkvalitnější), Sonnet 5.5, Haiku 5.5 (nejlevnější) |
 | Model – OpenAI | Automaticky podle textu, GPT-6 Astra (výchozí, nejkvalitnější), GPT-6.1 Sol, GPT-5.6 Terra, GPT-6 Luna (nejlevnější) |
+| Model – Mistral | Automaticky podle textu, Mistral Large (výchozí, největší), Mistral Medium, Mistral Small (nejlevnější) |
 | Jazyk shrnutí | čeština, angličtina, jazyk stránky |
 | Délka shrnutí | krátké (3–5 bodů), střední, podrobné |
 | Ověření fake news | API klíč TypeSafe AI |
@@ -100,12 +102,15 @@ a hotové sama odškrtne. Znovu ji otevřete odkazem **Návod** v záhlaví nast
 Výběr funguje stejně jako cíl Pinu: zvolíte poskytovatele a nastavení zobrazí jen jeho pole
 (API klíč a model). Klíč i model si každý poskytovatel pamatuje zvlášť, takže mezi nimi můžete
 přepínat bez nového vyplňování. Jazyk, délka shrnutí i všechny ostatní funkce (ověření, automatická
-volba modelu, Pin) fungují s oběma poskytovateli stejně.
+volba modelu, Pin) fungují se všemi poskytovateli stejně.
 
 - **Anthropic** – Claude API (`api.anthropic.com`). Když model žádost odmítne, Opus a Sonnet
   ji automaticky zkusí na záložním modelu.
 - **OpenAI** – Responses API (`POST https://api.openai.com/v1/responses`) se streamováním;
   požadavky se posílají s `store: false`, takže je OpenAI neukládá pro pozdější zobrazení.
+- **Mistral** – Chat Completions API (`POST https://api.mistral.ai/v1/chat/completions`)
+  se streamováním. Modely se volají aliasy `mistral-large-latest`, `mistral-medium-latest`
+  a `mistral-small-latest`, takže se vždy použije aktuální verze; okno ukáže skutečně použitý model.
 
 ## Ověření fake news
 
@@ -126,14 +131,14 @@ ze začátku textu stránky (prvních 20 000 znaků).
 Při volbě modelu **Automaticky podle textu** nejdřív model Jev od TypeSafe AI posoudí
 náročnost stránky a podle ní se vybere model zvoleného poskytovatele:
 
-| Druh textu | Anthropic | OpenAI |
-|---|---|---|
-| Běžná zpráva, blog, oznámení, jednoduchý text | Haiku 5.5 | GPT-6 Luna |
-| Odbornější článek, analýza, návod, recenze | Sonnet 5.5 | GPT-6.1 Sol |
-| Náročný, vysoce odborný text (studie, právo, medicína, technika) | Opus 5.5 | GPT-6 Astra |
+| Druh textu | Anthropic | OpenAI | Mistral |
+|---|---|---|---|
+| Běžná zpráva, blog, oznámení, jednoduchý text | Haiku 5.5 | GPT-6 Luna | Mistral Small |
+| Odbornější článek, analýza, návod, recenze | Sonnet 5.5 | GPT-6.1 Sol | Mistral Medium |
+| Náročný, vysoce odborný text (studie, právo, medicína, technika) | Opus 5.5 | GPT-6 Astra | Mistral Large |
 
 Vyžaduje klíč TypeSafe AI. Bez něj, nebo když posouzení selže, se použije střední model
-(Sonnet 5.5, resp. GPT-6.1 Sol) a okno na to upozorní.
+(Sonnet 5.5, GPT-6.1 Sol, resp. Mistral Medium) a okno na to upozorní.
 
 ## Pin
 
@@ -209,6 +214,7 @@ Používá se Notion API verze `2026-03-11` (`api.notion.com`).
 | „Tuto stránku nelze přečíst“ | Interní stránky Chromu (`chrome://…`), Chrome Web Store a vestavěný prohlížeč PDF rozšířením číst obsah nedovolí. |
 | „API klíč je neplatný“ / „nejsou kredity“ | Zkontrolujte klíč a kredit na [console.anthropic.com](https://console.anthropic.com). |
 | „API klíč OpenAI je neplatný“ / „Na účtu OpenAI nejsou kredity“ | Zkontrolujte klíč a kredit (Billing) na [platform.openai.com](https://platform.openai.com). |
+| „API klíč Mistral je neplatný“ / „Na účtu Mistral nejsou kredity“ | Zkontrolujte klíč a platební údaje (Billing) na [console.mistral.ai](https://console.mistral.ai). |
 | „Pro automatickou volbu modelu chybí klíč TypeSafe AI“ | Doplňte klíč TypeSafe, nebo zvolte konkrétní model. |
 | Craft: „Cílový dokument je v Craft v koši“ | Dnešní denní poznámka je v koši – obnovte ji, nebo ji z koše trvale smažte. |
 | Craft: „vyžaduje API klíč“ | Vyplňte API klíč připojení (`pdk_…`). |
@@ -219,16 +225,15 @@ Používá se Notion API verze `2026-03-11` (`api.notion.com`).
 ## Soukromí a bezpečnost
 
 - Stránku rozšíření přečte jen po kliknutí na ikonu, jen tu jednu (oprávnění `activeTab`).
-- Text stránky se posílá pouze do zvolených služeb: Anthropic, nebo OpenAI (shrnutí – jen zvolenému
-  poskytovateli), TypeSafe AI (ověření,
-  volba modelu), Airtable, Craft nebo Notion (Pin). Žádný vlastní server, žádné sledování.
+- Text stránky se posílá pouze do zvolených služeb: Anthropic, OpenAI, nebo Mistral (shrnutí – jen
+  zvolenému poskytovateli), TypeSafe AI (ověření, volba modelu), Airtable, Craft nebo Notion (Pin). Žádný vlastní server, žádné sledování.
 - Do AI služeb se adresa stránky posílá bez parametrů a kotvy (`?…`, `#…`), protože v nich
   mohou být přihlašovací tokeny nebo osobní údaje.
 - API klíče jsou uložené jen lokálně v prohlížeči (`chrome.storage.local`) a každý se posílá
-  pouze na adresu své služby: `api.anthropic.com`, `api.openai.com`, `api.typesafe.ai`,
+  pouze na adresu své služby: `api.anthropic.com`, `api.openai.com`, `api.mistral.ai`, `api.typesafe.ai`,
   `api.airtable.com`, `connect.craft.do`, `api.notion.com`.
 - Stránky rozšíření mají přísnou Content Security Policy: smějí spouštět jen vlastní skripty
-  a připojovat se jen k těmto šesti API.
+  a připojovat se jen k těmto sedmi API.
 - Doporučujeme nastavit v konzolích jednotlivých služeb měsíční limit útraty.
 
 Podrobnosti o zpracování údajů jsou v [zásadách ochrany osobních údajů](PODMINKY.md).
@@ -237,7 +242,7 @@ Podrobnosti o zpracování údajů jsou v [zásadách ochrany osobních údajů]
 
 Rozšíření je zdarma; za použití AI platíte přímo poskytovatelům podle spotřeby. Cenu shrnutí
 nejvíc ovlivňuje model – Haiku 5.5 je výrazně levnější než Opus 5.5 (u OpenAI obdobně
-GPT-6 Luna oproti GPT-6 Astra). Automatická volba modelu přidá ke každému shrnutí jedno volání
+GPT-6 Luna oproti GPT-6 Astra, u Mistral Small oproti Large). Automatická volba modelu přidá ke každému shrnutí jedno volání
 TypeSafe AI, u běžných textů ale díky nejlevnějšímu modelu obvykle ušetří.
 
 ## Vydání nové verze
@@ -257,7 +262,7 @@ Do Chrome Web Store se nahrává **jen ZIP s obsahem složky `extension`** (`man
 archivu), ne celý repozitář. Lokálně ho vytvoříte příkazem `npm run zip`.
 
 > Release vzniká jen z větve `master` – změna verze v pracovní větvi release nezaloží.
-> Release lze vyvolat i ručním nahráním značky (`git tag v0.5.5 && git push origin v0.5.5`)
+> Release lze vyvolat i ručním nahráním značky (`git tag v0.5.6 && git push origin v0.5.6`)
 > – značka musí odpovídat verzi v `manifest.json` a měla by ukazovat na commit v `master`.
 >
 > Jediným zdrojem čísla verze je `extension/manifest.json`; `package.json` verzi nemá.
@@ -301,6 +306,8 @@ src/
   popup.js            ← logika okna (čtení stránky, shrnutí, ověření, Pin)
   summarize.js        ← prompt a volání zvoleného poskytovatele (Claude API)
   openai.js           ← shrnutí přes OpenAI (Responses API, streamování)
+  mistral.js          ← shrnutí přes Mistral (Chat Completions API, streamování)
+  sse.js              ← čtení streamované odpovědi (OpenAI, Mistral)
   factcheck.js        ← TypeSafe AI (Jev): ověření fake news a automatická volba modelu
   airtable.js         ← Pin do Airtable
   craft.js            ← Pin do Craft (nový dokument / denní poznámka)

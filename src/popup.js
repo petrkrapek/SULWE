@@ -13,6 +13,7 @@ import {
 } from "./settings.js";
 import { summarizePage, describeError } from "./summarize.js";
 import { OpenAIError } from "./openai.js";
+import { MistralError } from "./mistral.js";
 import { renderMarkdown } from "./markdown.js";
 import { factCheckPage, chooseModel, FactCheckError, VERDICTS } from "./factcheck.js";
 import { pinPage, parseTarget, AirtableError } from "./airtable.js";
@@ -229,7 +230,11 @@ async function summarize({ force = false } = {}) {
   } catch (err) {
     if (err instanceof Anthropic.APIUserAbortError || signal.aborted) return;
     setStatus("");
-    showError(err instanceof Anthropic.AnthropicError || err instanceof OpenAIError ? describeError(err) : err.message);
+    showError(
+      err instanceof Anthropic.AnthropicError || err instanceof OpenAIError || err instanceof MistralError
+        ? describeError(err)
+        : err.message,
+    );
   } finally {
     if (!signal.aborted) els.regenerate.disabled = false;
   }

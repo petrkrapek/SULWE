@@ -77,6 +77,29 @@
         </div>
       </fieldset>
 
+      <fieldset id="provider-mistral" class="provider">
+        <div class="field">
+          <label for="mistralKey">API klíč Mistral</label>
+          <div class="secret">
+            <input id="mistralKey" name="mistralKey" type="password" autocomplete="off" spellcheck="false" placeholder="Klíč z console.mistral.ai">
+            <button type="button" class="toggle" data-for="mistralKey">Zobrazit</button>
+          </div>
+          <p class="hint">
+            Získáte na <a href="https://console.mistral.ai/api-keys" target="_blank" rel="noopener">console.mistral.ai</a>.
+            Posílá se jen na api.mistral.ai.
+          </p>
+        </div>
+        <div class="field">
+          <label for="mistralModel">Model</label>
+          <select id="mistralModel" name="mistralModel"></select>
+          <p class="hint" id="mistralModel-hint" hidden>
+            Běžné zprávy shrne Mistral Small, odbornější články Mistral Medium, náročné texty Mistral Large.
+            Vyžaduje klíč TypeSafe AI (níže); bez něj se použije Mistral Medium.
+          </p>
+          <p class="hint">Vždy se použije aktuální verze zvoleného modelu.</p>
+        </div>
+      </fieldset>
+
       <div class="grid-2">
         <div class="field">
           <label for="language">Jazyk</label>
