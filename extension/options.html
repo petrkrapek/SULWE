@@ -98,7 +98,7 @@
     <h2>Pin</h2>
     <p class="hint">
       Volitelné. Tlačítko <strong>Pin</strong> v okně uloží odkaz a shrnutí stránky – podle volby
-      do tabulky v Airtable, nebo jako novou poznámku do Craft.
+      do tabulky v Airtable, jako novou poznámku do Craft, nebo na stránku či do databáze v Notion.
     </p>
     <label for="pinTarget">Kam ukládat</label>
     <select id="pinTarget" name="pinTarget"></select>
@@ -154,6 +154,31 @@
       <p class="hint">
         Klíč vytvoříte v detailu připojení (přístup přes API klíč). Craft ho ukáže jen jednou –
         zkopírujte ho hned.
+      </p>
+    </fieldset>
+
+    <fieldset id="pin-notion" class="pin-target">
+      <p class="hint">
+        Cílem může být <strong>stránka</strong> – každý Pin pod ní založí podstránku pojmenovanou podle webu –,
+        nebo <strong>databáze</strong> – každý Pin přidá záznam s názvem a adresou (sloupec URL) a shrnutím
+        v obsahu. Do databáze se stejná adresa neuloží dvakrát; chybějící sloupec URL rozšíření doplní,
+        nic nemaže ani nepřepisuje.
+      </p>
+      <label for="notionToken">Token integrace Notion</label>
+      <div class="row">
+        <input id="notionToken" name="notionToken" type="password" autocomplete="off" spellcheck="false" placeholder="ntn_…">
+        <button type="button" class="toggle" data-for="notionToken">Zobrazit</button>
+      </div>
+      <p class="hint">
+        Na <a href="https://www.notion.so/profile/integrations" target="_blank" rel="noopener">notion.so/profile/integrations</a>
+        vytvořte interní integraci se schopnostmi <strong>čtení, vkládání a úprav obsahu</strong> a zkopírujte
+        její token. Ukládá se jen v tomto prohlížeči a posílá se pouze na api.notion.com.
+      </p>
+      <label for="notionTarget">Stránka nebo databáze Notion</label>
+      <input id="notionTarget" name="notionTarget" type="text" autocomplete="off" spellcheck="false" placeholder="https://www.notion.so/…">
+      <p class="hint">
+        Vložte odkaz na stránku nebo databázi (••• → Kopírovat odkaz) nebo její ID. V Notion ji pak sdílejte
+        s integrací: ••• → <strong>Připojení</strong> → vyberte svou integraci.
       </p>
     </fieldset>
 

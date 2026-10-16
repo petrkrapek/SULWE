@@ -11,6 +11,7 @@ import {
 } from "./settings.js";
 import { parseConnectionUrl, CRAFT_MODES } from "./craft.js";
 import { DEFAULT_TABLE } from "./airtable.js";
+import { parseNotionId } from "./notion.js";
 
 const form = document.getElementById("form");
 const status = document.getElementById("status");
@@ -75,6 +76,8 @@ form.pinTarget.addEventListener("change", updatePinTarget);
 updatePinTarget();
 form.airtableTarget.value = settings.airtableTarget;
 form.airtableTable.value = settings.airtableTable;
+form.notionToken.value = settings.notionToken;
+form.notionTarget.value = settings.notionTarget;
 
 for (const button of document.querySelectorAll(".toggle")) {
   button.addEventListener("click", () => {
@@ -96,6 +99,11 @@ form.addEventListener("submit", async (e) => {
     }
     craftUrl = form.craftUrl.value = normalized;
   }
+  const notionTarget = form.notionTarget.value.trim();
+  if (notionTarget && !parseNotionId(notionTarget)) {
+    status.textContent = "Adresa Notion musí být odkaz na stránku nebo databázi (případně její ID).";
+    return;
+  }
   await saveSettings({
     pinTarget: form.pinTarget.value,
     craftUrl,
@@ -112,6 +120,8 @@ form.addEventListener("submit", async (e) => {
     airtableToken: form.airtableToken.value.trim(),
     airtableTarget: form.airtableTarget.value.trim(),
     airtableTable: form.airtableTable.value.trim() || DEFAULT_TABLE,
+    notionToken: form.notionToken.value.trim(),
+    notionTarget,
   });
   // Po změně nastavení zahodíme uložená shrnutí a ověření, ať se vytvoří znovu.
   await chrome.storage.session.clear();

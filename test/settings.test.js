@@ -21,6 +21,12 @@ test("pinConfigured: Craft potřebuje adresu i klíč", () => {
   assert.equal(pinConfigured({ ...craft, craftKey: "pdk_x" }), true);
 });
 
+test("pinConfigured: Notion potřebuje token i cíl", () => {
+  const notion = { ...DEFAULTS, pinTarget: "notion", notionToken: "ntn_x" };
+  assert.equal(pinConfigured(notion), false);
+  assert.equal(pinConfigured({ ...notion, notionTarget: "https://www.notion.so/x" }), true);
+});
+
 test("providerKey a selectedModel berou údaje zvoleného poskytovatele", () => {
   const settings = { ...DEFAULTS, apiKey: "sk-ant", openaiKey: "sk-oai", model: "claude-haiku-5-5" };
   assert.equal(providerKey(settings), "sk-ant");

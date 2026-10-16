@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Shrnutí stránky",
-  "version": "0.5.4",
+  "version": "0.5.5",
   "description": "Pomocí AI shrne aktuální webovou stránku a volitelně posoudí, zda nejde o fake news.",
   "action": {
     "default_title": "Shrnout stránku",
@@ -30,9 +30,10 @@
     "https://api.openai.com/*",
     "https://api.typesafe.ai/*",
     "https://api.airtable.com/*",
-    "https://connect.craft.do/*"
+    "https://connect.craft.do/*",
+    "https://api.notion.com/*"
   ],
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; connect-src https://api.anthropic.com https://api.openai.com https://api.typesafe.ai https://api.airtable.com https://connect.craft.do"
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; connect-src https://api.anthropic.com https://api.openai.com https://api.typesafe.ai https://api.airtable.com https://connect.craft.do https://api.notion.com"
   }
 }

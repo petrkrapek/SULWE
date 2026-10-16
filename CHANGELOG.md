@@ -7,6 +7,19 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 
 ## [Unreleased]
 
+## [0.5.5] – 2026-10-16
+
+### Přidáno
+- Pin do Notion: odkaz a shrnutí se uloží jako podstránka zvolené stránky, nebo jako záznam
+  ve zvolené databázi (název, sloupec URL, shrnutí v obsahu záznamu). Do databáze se stejná
+  adresa neuloží dvakrát a chybějící sloupec URL se doplní. Stačí token interní integrace
+  Notion a odkaz na stránku či databázi sdílenou s integrací.
+
+### Změněno
+- Rozšíření nově potřebuje oprávnění pro `api.notion.com` (volá se jen při Pinu do Notion);
+  Chrome může po aktualizaci požádat o jeho potvrzení.
+- Zásady ochrany osobních údajů popisují i Pin do Notion.
+
 ## [0.5.4] – 2026-10-16
 
 ### Přidáno
@@ -146,7 +159,8 @@ a projekt používá [sémantické verzování](https://semver.org/lang/cs/).
 - Kopírování shrnutí a jeho opětovné vytvoření.
 - Hotová shrnutí se pamatují do zavření prohlížeče.
 
-[Unreleased]: https://github.com/petrkrapek/SULWE/compare/v0.5.4...master
+[Unreleased]: https://github.com/petrkrapek/SULWE/compare/v0.5.5...master
+[0.5.5]: https://github.com/petrkrapek/SULWE/compare/v0.5.4...v0.5.5
 [0.5.4]: https://github.com/petrkrapek/SULWE/compare/v0.5.3...v0.5.4
 [0.5.3]: https://github.com/petrkrapek/SULWE/compare/62697f8...b224fd5
 [0.5.2]: https://github.com/petrkrapek/SULWE/compare/f787a91...62697f8
